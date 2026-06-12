@@ -1,0 +1,268 @@
+/* Nominator Dashboard Scoped Page CSS */
+
+.nominator-dashboard-page .stat-card {
+    border-radius: 20px;
+    padding: 24px;
+    height: 100%;
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.nominator-dashboard-page .card-orange {
+    background: linear-gradient(135deg, #ffffff 60%, rgba(239, 108, 87, 0.04) 100%);
+    border-color: rgba(239, 108, 87, 0.12);
+}
+.nominator-dashboard-page .card-teal {
+    background: linear-gradient(135deg, #ffffff 60%, rgba(22, 179, 138, 0.04) 100%);
+    border-color: rgba(22, 179, 138, 0.12);
+}
+.nominator-dashboard-page .card-purple {
+    background: linear-gradient(135deg, #ffffff 60%, rgba(160, 62, 164, 0.04) 100%);
+    border-color: rgba(160, 62, 164, 0.12);
+}
+
+.nominator-dashboard-page .stat-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.nominator-dashboard-page .stat-number {
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.1;
+}
+
+.nominator-dashboard-page .stat-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.nominator-dashboard-page .bg-orange-light {
+    background-color: rgba(239, 108, 87, 0.12);
+    color: var(--orange);
+}
+
+.nominator-dashboard-page .bg-teal-light {
+    background-color: rgba(22, 179, 138, 0.12);
+    color: var(--teal);
+}
+
+.nominator-dashboard-page .bg-purple-light {
+    background-color: rgba(160, 62, 164, 0.12);
+    color: var(--purple);
+}
+
+.nominator-dashboard-page .stat-info-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nominator-dashboard-page .stat-info-text i {
+    font-size: 14px;
+}
+
+.nominator-dashboard-page .stat-card-footer {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 16px;
+    margin-top: auto;
+}
+
+.nominator-dashboard-page .stat-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: gap 0.2s;
+}
+
+.nominator-dashboard-page .stat-link:hover {
+    gap: 8px;
+}
+
+/* Recent Activities Panel */
+.nominator-dashboard-page .activity-panel {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 24px;
+}
+
+.nominator-dashboard-page .view-all-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.nominator-dashboard-page .view-all-link:hover {
+    text-decoration: underline;
+}
+
+.nominator-dashboard-page .activity-item {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.nominator-dashboard-page .activity-item:last-child {
+    border-bottom: none;
+}
+
+.nominator-dashboard-page .activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.nominator-dashboard-page .bg-success-light {
+    background-color: rgba(22, 179, 138, 0.12);
+}
+
+.nominator-dashboard-page .bg-warning-light {
+    background-color: rgba(243, 162, 43, 0.12);
+}
+
+.nominator-dashboard-page .activity-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.nominator-dashboard-page .activity-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.nominator-dashboard-page .activity-time {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+}
+
+/* Current Events Table Section */
+.nominator-dashboard-page .dashboard-table-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.nominator-dashboard-page .table-header h5 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Table Style Refinement */
+.nominator-dashboard-page .table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.nominator-dashboard-page .table thead {
+    background-color: #f8fafc;
+}
+
+.nominator-dashboard-page .table th {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nominator-dashboard-page .table td {
+    padding: 18px 16px;
+    font-size: 14px;
+    color: var(--text-dark);
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.nominator-dashboard-page .table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.nominator-dashboard-page .event-name {
+    color: var(--text-dark);
+}
+
+/* Custom badges & action buttons */
+.nominator-dashboard-page .nominee-count-badge {
+    background-color: rgba(0, 124, 195, 0.08);
+    color: var(--primary);
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nominator-dashboard-page .text-primary-light {
+    color: var(--primary);
+}
+
+.nominator-dashboard-page .btn-view-list {
+    background-color: #f1f5f9;
+    color: var(--text-dark);
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.nominator-dashboard-page .btn-view-list:hover {
+    background-color: #e2e8f0;
+}
+
+.nominator-dashboard-page .btn-submit-nomination {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 24px;
+    border-radius: 12px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 124, 195, 0.15);
+}
+
+.nominator-dashboard-page .btn-submit-nomination:hover {
+    background-color: var(--primary-dark);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 124, 195, 0.2);
+}
+
+@media (max-width: 768px) {
+    .nominator-dashboard-page .row.g-3 > * {
+        margin-bottom: 15px;
+    }
+}
