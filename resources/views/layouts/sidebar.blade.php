@@ -95,12 +95,16 @@
       </button>
 
       <!-- Logout Action Button -->
-      <button
-        class="btn text-white d-flex align-items-center fs-6"
-        style="padding-left: 15px">
-        <i class="bi bi-box-arrow-right me-2"></i>
-        <span class="fw-semibold fs-09">Logout</span>
-      </button>
+      <form action="{{ route('logout') }}" method="POST" id="logout-form" class="d-inline">
+        @csrf
+        <button
+          type="submit"
+          class="btn text-white d-flex align-items-center fs-6 border-0 bg-transparent"
+          style="padding-left: 15px">
+          <i class="bi bi-box-arrow-right me-2"></i>
+          <span class="fw-semibold fs-09">Logout</span>
+        </button>
+      </form>
     </div>
   </div>
 </aside>
