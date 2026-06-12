@@ -408,14 +408,6 @@
           <input type="text" class="form-control form-control-sm" placeholder="e.g. head@events.com" required id="form-event-head" />
         </div>
         <div class="col-md-6">
-          <label class="form-label fw-bold small">Assigned Nominators (Select multiple)</label>
-          <select class="form-select form-select-sm" multiple id="form-event-nominators" style="height: 60px;">
-            <option value="John Doe">John Doe (john.doe@nominator.com)</option>
-            <option value="Alice Smith">Alice Smith (alice@nominator.com)</option>
-            <option value="Sarah Miller">Sarah Miller (sarah@nominator.com)</option>
-          </select>
-        </div>
-        <div class="col-md-6">
           <label class="form-label fw-bold small">Max Nominees per Form</label>
           <input type="number" class="form-control form-control-sm" required value="10" id="form-event-max-nominees" />
         </div>
