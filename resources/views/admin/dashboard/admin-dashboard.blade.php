@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<h2>Admin Dashboard</h2>
 <!-- Dashboard Cards Grid -->
 <div class="row g-4 align-items-stretch">
   <!-- Card 1: New Events -->
