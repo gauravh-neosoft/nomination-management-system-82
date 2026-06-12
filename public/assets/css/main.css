@@ -1,0 +1,351 @@
+@import url("https://use.typekit.net/nkq8fly.css");
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap");
+
+/* -------------------------------------------------------------
+ * 1. Global Variables & Themes
+ * Affects: Entire application / custom CSS variables
+ * ------------------------------------------------------------- */
+:root {
+  /* Font Sizes */
+  --fs-h1: 2rem;
+  --fs-h2: 1.5rem;
+  --fs-h3: 1.25rem;
+  --fs-h4: 1.125rem;
+  --fs-h5: 1rem;
+  --fs-h6: 0.875rem;
+
+  --fs-body-large: 1.125rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-xs: 0.75rem;
+
+  /* Theme Color Palette */
+  --brand-primary: #007cc3;
+  --border-color: #dadada99;
+  --bg-secondary: #1989c9;
+  --text-secondary: #7e7e7e;
+  --text-light-grey: #94a3b8;
+  --white: #fff;
+  --border-light-grey: #f1f5f9;
+  --bg-green: #00b28f;
+  --bg-opacity: #0000001a;
+}
+
+/* -------------------------------------------------------------
+ * 2. Base Reset & Typography
+ * Affects: All HTML elements, headings, paragraphs, and base sizes
+ * ------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+html {
+  font-family: "myriad-pro", Arial;
+}
+
+/* Headings with Oswald font fallbacks */
+h1 {
+  font-size: var(--fs-h1) !important;
+  font-weight: 700;
+  line-height: 1.2;
+  font-family: "tungstenw05-medium", "Oswald", sans-serif;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.875rem;
+}
+
+h3 {
+  font-size: var(--fs-h3);
+  line-height: 1.4;
+}
+
+h4 {
+  font-size: var(--fs-h4);
+}
+
+h5 {
+  font-size: var(--fs-h5);
+}
+
+h6 {
+  font-size: var(--fs-h6);
+  text-transform: uppercase;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+/* Paragraphs and Divs font sizes */
+p,
+div {
+  font-size: var(--fs-body) !important;
+  font-weight: 400;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Custom text utility sizes */
+.text-normal {
+  font-size: var(--fs-body);
+}
+
+.text-lg {
+  font-size: var(--fs-body-large) !important;
+  line-height: 1.6;
+}
+
+.text-small {
+  font-size: var(--fs-small) !important;
+}
+
+.text-xs {
+  font-size: var(--fs-xs);
+}
+
+/* -------------------------------------------------------------
+ * 3. Buttons & Navigation Links
+ * Affects: Navigation elements and standard button text sizing
+ * ------------------------------------------------------------- */
+.nav-link {
+  font-size: 1rem;
+  font-weight: 600 !important;
+}
+
+.btn {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.btn-lg {
+  font-size: 1.125rem;
+}
+
+/* -------------------------------------------------------------
+ * 4. Form Controls
+ * Affects: Input placeholders, textareas, selects, and form labels
+ * ------------------------------------------------------------- */
+label {
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  font-size: var(--fs-body);
+}
+
+input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* -------------------------------------------------------------
+ * 5. Dashboard Cards
+ * Affects: Card headers, titles, and stat values on the main panel
+ * ------------------------------------------------------------- */
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 2rem !important;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* -------------------------------------------------------------
+ * 6. Tables styling
+ * Affects: Tabular data lists (e.g. Assigned Events)
+ * ------------------------------------------------------------- */
+.table {
+  margin-bottom: 0;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+  text-align: center;
+  font-weight: 300;
+  font-size: var(--fs-body);
+}
+
+.table thead th {
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------------
+ * 7. Bootstrap Colors Overrides
+ * Affects: Standard brand colors (primary, secondary, primary text)
+ * ------------------------------------------------------------- */
+.bg-primary {
+  background-color: var(--brand-primary) !important;
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary) !important;
+}
+
+.text-primary {
+  color: var(--brand-primary) !important;
+}
+
+/* -------------------------------------------------------------
+ * 8. Layout Wrappers
+ * Affects: Main wrapper elements, scrollbars, header positioning
+ * ------------------------------------------------------------- */
+.main-wrapper {
+  height: 100vh;
+}
+
+.content-scroll {
+  min-height: 0;
+}
+
+/* Hide scrollbar utility for clean layout */
+.hide-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.brand-logo,
+.nav-heading {
+  margin-top: 30px;
+}
+
+.bell-badge {
+  width: 5px;
+  height: 5px;
+  right: 0px;
+  top: 1px;
+}
+
+/* -------------------------------------------------------------
+ * 9. Responsive Mobile Sidebar Toggle
+ * Affects: Sidebar element positioning on mobile
+ * ------------------------------------------------------------- */
+.sidebar {
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+/* -------------------------------------------------------------
+ * 10. Timeline Component
+ * Affects: Right side recent activity feed list
+ * ------------------------------------------------------------- */
+.timeline-content-box {
+  min-height: 0;
+  height: 177px !important;
+}
+
+.timeline-with-icons {
+  border-left: 2px solid var(--border-light-grey);
+  position: relative;
+  list-style: none;
+  padding-left: 1.5rem;
+}
+
+.timeline-with-icons .timeline-item {
+  position: relative;
+}
+
+.timeline-with-icons .timeline-icon {
+  position: absolute;
+  left: -2.45rem;
+  border-radius: 50%;
+  height: 31px;
+  width: 31px;
+}
+
+.timeline-approved {
+  background-color: #f0fdf4;
+  color: #22c55e;
+}
+
+.timeline-draft {
+  background-color: #fff7ed;
+  color: #fb923c;
+}
+
+.timeline-submitted {
+  background-color: #eff6ff;
+  color: #3b82f6;
+}
+
+.scrollable-content-box::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollable-content-box::-webkit-scrollbar-track {
+  margin: 8px 0;
+  border-radius: 10px;
+}
+
+.scrollable-content-box::-webkit-scrollbar-thumb {
+  background: var(--brand-primary);
+  border-radius: 10px;
+}
+
+/* -------------------------------------------------------------
+ * 11. Login Page Specific styling
+ * Affects: Login box shadows, layout, responsive images
+ * ------------------------------------------------------------- */
+.login-heading {
+  font-size: 3rem !important;
+}
+
+.shadow-card {
+  box-shadow: 0px 1.42px 2.84px 0px #0000000d;
+  max-width: 500px;
+  width: 100%;
+}
+
+.login-decorative-img {
+  width: 200px;
+  height: 200px;
+  right: 0px;
+  top: 5%;
+}
+
+/* -------------------------------------------------------------
+ * 12. Accordion Component
+ * Affects: Bootstrap Collapse / Accordion icon toggles
+ * ------------------------------------------------------------- */
+.custom-accordion .accordion-button::after {
+  display: none !important;
+}
+
+.custom-accordion .accordion-button .bi-chevron-down {
+  transition: transform 0.2s ease;
+}
+
+.custom-accordion .accordion-button:not(.collapsed) .bi-chevron-down {
+  transform: rotate(180deg);
+}

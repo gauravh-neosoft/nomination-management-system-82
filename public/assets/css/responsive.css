@@ -1,0 +1,82 @@
+/* -------------------------------------------------------------
+ * Responsive Layout & Media Queries
+ * Affects: Font-scaling, grid shifts, sidebar visibility, 
+ *          and layout heights across different device screen sizes.
+ * ------------------------------------------------------------- */
+
+/* Base HTML font size for rem calculations on mobile */
+html {
+  font-size: 14px;
+}
+
+/* -------------------------------------------------------------
+ * Tablets (Medium devices: 768px and up)
+ * ------------------------------------------------------------- */
+@media (min-width: 768px) {
+  /* Increase base font-scaling slightly */
+  html {
+    font-size: 15px;
+  }
+  h1 {
+    font-size: 1.75rem !important;
+  }
+  /* Expand notification popup width */
+  .notifications {
+    width: 350px !important;
+  }
+  /* Light background fill for login page on larger screens */
+  .login-bg-grey {
+    background-color: #f8fafc !important;
+  }
+  /* Rotate arrows/lines 90 degrees for row layouts */
+  .rotate-md-90 {
+    transform: rotate(90deg);
+  }
+}
+
+/* -------------------------------------------------------------
+ * Desktop (Large screens: 992px and up)
+ * ------------------------------------------------------------- */
+@media (min-width: 992px) {
+  /* Standard desktop root font-size scale */
+  html {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  /* Static positioning instead of absolute on desktop */
+  .position-lg-static {
+    position: static !important;
+  }
+  /* Ensure the sidebar remains visible/slid-in on desktops */
+  .sidebar {
+    transform: translateX(0) !important;
+  }
+  /* Desktop specific heights for custom scroll zones */
+  .h-lg-200 {
+    height: 200px !important;
+  }
+  .h-lg-100 {
+    height: 100% !important;
+  }
+  /* Center the decorative circles inside login screen */
+  .login-decorative-img {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  /* Desktop notification popup width */
+  .notifications {
+    width: 400px !important;
+  }
+}
+
+/* -------------------------------------------------------------
+ * Large Desktops / Ultra-wide Screens (1167px and up)
+ * ------------------------------------------------------------- */
+@media (min-width: 1167px) {
+  /* Fix custom card block widths to exact quarters of row */
+  .c-card {
+    width: 25% !important;
+  }
+}

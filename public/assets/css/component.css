@@ -1,0 +1,15 @@
+/* -------------------------------------------------------------
+ * Component Specific CSS styling
+ * Affects: Popups, dropdowns, and custom visual widgets
+ * ------------------------------------------------------------- */
+
+/* Notification Dropdown Panel Box */
+.notifications {
+  width: 250px;
+  max-height: 80vh;
+}
+
+/* Light border lines for notification rows */
+.notification-border {
+  border-color: #f3f4f6 !important;
+}

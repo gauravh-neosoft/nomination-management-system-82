@@ -1,0 +1,138 @@
+/* -------------------------------------------------------------
+ * Custom Utility CSS Classes
+ * Used to supplement Bootstrap classes for specific layout, 
+ * background color opacity, custom border sizes, and stat card backgrounds.
+ * ------------------------------------------------------------- */
+
+/* Cursor state */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Sizing Helpers */
+.w-fit {
+  width: fit-content;
+}
+
+.h-fit {
+  height: fit-content;
+}
+
+.min-h-0 {
+  min-height: 0;
+}
+
+/* -------------------------------------------------------------
+ * Stat Cards Light Background Tints
+ * Affects: Dashboard stat card background colors
+ * ------------------------------------------------------------- */
+.bg-light-orange {
+  background-color: #f16c510f;
+}
+
+.bg-light-green {
+  background-color: #00b28f0f;
+}
+
+.bg-light-purple {
+  background-color: #9635960f;
+}
+
+.bg-light-yellow {
+  background-color: #f4e0c866;
+}
+
+.bg-light-sky-blue {
+  background-color: #f8fafc;
+}
+
+.bg-opacity {
+  background-color: var(--bg-opacity);
+}
+
+/* -------------------------------------------------------------
+ * Custom Borders
+ * Affects: Borders of containers, sidebars, and tables
+ * ------------------------------------------------------------- */
+.border-grey {
+  border: 1px solid #dadada99;
+}
+
+.border-left {
+  border-left: 1px solid var(--white);
+}
+
+.border-color-light-grey {
+  border-color: var(--border-light-grey) !important;
+}
+
+.border-light-grey {
+  border: 1px solid var(--border-light-grey) !important;
+}
+
+/* Sidebar lower elements background */
+.bg-secondary {
+  background-color: #bee3ff66 !important;
+}
+
+/* -------------------------------------------------------------
+ * Stat Cards Icon Background Circles
+ * Affects: Mini circles around dashboard stat icons
+ * ------------------------------------------------------------- */
+.icon-with-bg {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.icon-bg-orange {
+  background-color: #f16c51;
+}
+
+.icon-bg-green {
+  background-color: #00b28f;
+}
+
+.icon-bg-light-blue {
+  background-color: #eff6ff;
+}
+
+.icon-bg-light-red {
+  background-color: #fff1f2;
+}
+
+.icon-bg-purple {
+  background-color: #963596;
+}
+
+/* -------------------------------------------------------------
+ * Text Colors
+ * Affects: Custom colored typography blocks
+ * ------------------------------------------------------------- */
+.text-blue {
+  color: #3b82f6 !important;
+}
+.text-orange {
+  color: #f16c51 !important;
+}
+
+.text-purple {
+  color: #963596;
+}
+
+.bg-green {
+  background-color: var(--bg-green);
+}
+.text-light-grey {
+  color: var(--text-light-grey);
+}
+
+/* Letter Spacing */
+.letter-spacing-1 {
+  letter-spacing: 1px;
+}
+
+/* Alert Boxes background */
+.alert-blue-bg {
+  background-color: #bee3ff33;
+}
