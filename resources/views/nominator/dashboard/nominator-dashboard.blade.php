@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<h2>Dashboard</h2>
 <!-- Dashboard Cards Grid -->
 <div class="row g-4 align-items-stretch">
   <!-- Card 1: New Events -->
@@ -153,7 +154,7 @@
       </thead>
       <tbody>
         @for ($i = 1; $i <= 5; $i++)
-        <tr class="{{ $i % 2 == 0 ? 'table-light' : '' }}">
+          <tr class="{{ $i % 2 == 0 ? 'table-light' : '' }}">
           <td>{{ $i }}</td>
           <td>
             <p class="lh-1">Q3 Performance Awards</p>
@@ -166,8 +167,8 @@
           <td>
             <button class="btn btn-sm btn-link text-decoration-none">View</button>
           </td>
-        </tr>
-        @endfor
+          </tr>
+          @endfor
       </tbody>
     </table>
   </div>
