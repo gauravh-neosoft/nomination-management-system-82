@@ -28,6 +28,18 @@
 </head>
 
 <body class="bg-primary">
+    <!-- Toast Notification Container for AJAX Simulation Feedback -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+      <div id="ajaxToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body" id="ajaxToastMsg">
+            Action completed successfully.
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+
     <div class="container-fluid main-wrapper">
         <div class="row h-100">
             <!-- Sidebar Overlay for Mobile -->
@@ -39,12 +51,12 @@
             
             <!-- Sidebar Component -->
             @include('layouts.sidebar')
-
+ 
             <!-- Right side wrapper for Header and Main Content -->
             <div class="col-12 col-lg-10 p-0 d-flex flex-column h-100">
                 <!-- Top Navbar Header -->
                 @include('layouts.header')
-
+ 
                 <!-- Main Content Panel Area -->
                 <div class="flex-grow-1 p-3 pt-0 d-flex overflow-hidden content-scroll">
                     <!-- White scrollable container -->
@@ -55,9 +67,22 @@
             </div>
         </div>
     </div>
-
+ 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+ 
+    <!-- Global Toast notification helper -->
+    <script>
+    function showToast(msg, bgClass = 'bg-success') {
+        const toastEl = document.getElementById('ajaxToast');
+        if (!toastEl) return;
+        const toastMsg = document.getElementById('ajaxToastMsg');
+        toastEl.className = `toast align-items-center text-white ${bgClass} border-0`;
+        toastMsg.textContent = msg;
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }
+    </script>
 
     @stack('scripts')
 

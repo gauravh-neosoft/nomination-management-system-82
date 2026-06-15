@@ -9,7 +9,12 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $email = Auth::user() ? Auth::user()->email : 'gaurav@nominator.com';
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $email = $user->email;
 
         $view = 'nominator.dashboard.nominator-dashboard';
         if (str_contains($email, 'unitspoc')) {
@@ -17,7 +22,7 @@ class DashboardController extends Controller
         } elseif (str_contains($email, 'eventops')) {
             $view = 'event-ops.dashboard.event-ops-dashboard';
         } elseif (str_contains($email, 'admin')) {
-            $view = 'admin.dashboard.admin-dashboard';
+            return redirect()->route('admin-dashboard');
         }
 
         return view($view);
