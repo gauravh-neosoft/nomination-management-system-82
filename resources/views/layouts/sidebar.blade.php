@@ -20,20 +20,38 @@
       style="height: 200px">
       @php
       $menu = 'nominator-menu';
-      if (auth()->check()) {
-      $role = strtolower(auth()->user()->role ?? '');
-      if (str_contains($role, 'nominator')) {
-      $menu = 'nominator-menu';
-      } elseif (str_contains($role, 'spoc') || str_contains($role, 'unit')) {
-      $menu = 'unit-spoc-menu';
-      }
+      $email = auth()->check() && auth()->user() ? strtolower(auth()->user()->email) : '';
+
+      if (str_contains($email, 'unitspoc')) {
+          $menu = 'unit-spoc-menu';
+      } elseif (str_contains($email, 'eventops')) {
+          $menu = 'event-ops-menu';
+      } elseif (str_contains($email, 'admin')) {
+          $menu = 'admin-menu';
+      } else {
+          if (auth()->check()) {
+              $role = strtolower(auth()->user()->role ?? '');
+              if (str_contains($role, 'nominator')) {
+                  $menu = 'nominator-menu';
+              } elseif (str_contains($role, 'spoc') || str_contains($role, 'unit')) {
+                  $menu = 'unit-spoc-menu';
+              } elseif (str_contains($role, 'eventops') || str_contains($role, 'event-ops')) {
+                  $menu = 'event-ops-menu';
+              } elseif (str_contains($role, 'admin')) {
+                  $menu = 'admin-menu';
+              }
+          }
       }
 
       $path = request()->path();
       if (str_contains($path, 'nominator')) {
-      $menu = 'nominator-menu';
+          $menu = 'nominator-menu';
       } elseif (str_contains($path, 'unit-spoc') || str_contains($path, 'unit_spoc')) {
-      $menu = 'unit-spoc-menu';
+          $menu = 'unit-spoc-menu';
+      } elseif (str_contains($path, 'event-ops') || str_contains($path, 'event_ops')) {
+          $menu = 'event-ops-menu';
+      } elseif (str_contains($path, 'admin')) {
+          $menu = 'admin-menu';
       }
       @endphp
       @include('layouts.menus.' . $menu)
@@ -77,12 +95,16 @@
       </button>
 
       <!-- Logout Action Button -->
-      <button
-        class="btn text-white d-flex align-items-center fs-6"
-        style="padding-left: 15px">
-        <i class="bi bi-box-arrow-right me-2"></i>
-        <span class="fw-semibold fs-09">Logout</span>
-      </button>
+      <form action="{{ route('logout') }}" method="POST" id="logout-form" class="d-inline">
+        @csrf
+        <button
+          type="submit"
+          class="btn text-white d-flex align-items-center fs-6 border-0 bg-transparent"
+          style="padding-left: 15px">
+          <i class="bi bi-box-arrow-right me-2"></i>
+          <span class="fw-semibold fs-09">Logout</span>
+        </button>
+      </form>
     </div>
   </div>
 </aside>
