@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Events;
 
 class EventsAdminController extends Controller
@@ -59,7 +60,7 @@ class EventsAdminController extends Controller
         }
 
         $event->status = 'ongoing';
-        $event->last_updated_by = auth()->id();
+        $event->last_updated_by = Auth::id();
 
         $event->save();
 

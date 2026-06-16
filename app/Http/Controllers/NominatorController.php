@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Events;
 use Carbon\Carbon;
@@ -11,15 +12,15 @@ class NominatorController extends Controller
 {
     public function dashboard()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         // 1. Get counts
         $newEventsCount = Events::where('status', 'ongoing')->count();
-        
+
         $nominationsCount = DB::table('nominees_master')
             ->where('nominator_id', $userId)
             ->count();
-            
+
         $eventHistoryCount = Events::where('status', 'completed')->count();
 
         // 2. Get latest active events for the table
@@ -34,7 +35,7 @@ class NominatorController extends Controller
                 ->where('event_id', $event->id)
                 ->where('nominator_id', $userId)
                 ->count();
-            
+
             // Format dates matching the reference "Dec 1, 2024"
             $event->formatted_start_date = Carbon::parse($event->start_date)->format('M j, Y');
             $event->formatted_end_date = Carbon::parse($event->end_date)->format('M j, Y');
@@ -51,7 +52,7 @@ class NominatorController extends Controller
 
     public function activeEvents()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         // Fetch ongoing events
         $rawEvents = Events::where('status', 'ongoing')
@@ -78,7 +79,7 @@ class NominatorController extends Controller
             $event->formatted_start_date = Carbon::parse($event->start_date)->format('M j, Y');
             $event->formatted_end_date = Carbon::parse($event->end_date)->format('M j, Y');
             $event->formatted_deadline = Carbon::parse($event->nomination_deadline)->format('M j, Y H:i');
-            
+
             // Determine closing soon (e.g. deadline within next 48 hours)
             $deadline = Carbon::parse($event->nomination_deadline);
             $event->is_closing_soon = $deadline->isFuture() && $deadline->diffInHours(Carbon::now()) <= 48;
@@ -88,7 +89,7 @@ class NominatorController extends Controller
 
         // Calculate badges
         $openCount = Events::where('status', 'ongoing')->count();
-        
+
         $closingSoonCount = 0;
         foreach ($events as $evt) {
             if ($evt->is_closing_soon) {
@@ -101,7 +102,7 @@ class NominatorController extends Controller
 
     public function completedEvents()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         // Fetch completed events
         $rawEvents = Events::where('status', 'completed')
@@ -133,7 +134,7 @@ class NominatorController extends Controller
 
     public function nominations()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         // Fetch all nominees submitted by this nominator
         $nominees = DB::table('nominees_master')
@@ -159,7 +160,7 @@ class NominatorController extends Controller
     public function submitNomination(Request $request, $id)
     {
         $event = Events::findOrFail($id);
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         // 1. Check if the nominator has already reached the nomination limit for this event
         $currentCount = DB::table('nominees_master')
