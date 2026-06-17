@@ -35,8 +35,9 @@
     </div>
 
     <!-- Profile Button visible on Desktop Screens -->
-    <button
-      class="d-none d-lg-flex btn bg-secondary bg-opacity-75 text-white align-items-center gap-3 px-3 py-2">
+    <a
+      href="{{ route('profile') }}"
+      class="d-none d-lg-flex btn bg-secondary bg-opacity-75 text-white align-items-center gap-3 px-3 py-2 text-decoration-none">
       <i class="bi bi-person"></i>
 
       <div class="d-flex flex-column text-start">
@@ -54,6 +55,6 @@
         @endphp
         <!-- <small class="text-white-50">{{ $role }}</small> -->
       </div>
-    </button>
+    </a>
   </div>
 </header>

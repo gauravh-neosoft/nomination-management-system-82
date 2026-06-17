@@ -291,6 +291,65 @@
                 placeholder="India"
               />
             </div>
+
+            @if ($event->type === 'hospitality')
+              <div class="col-12 mt-4">
+                <hr class="text-muted" />
+                <h4 class="mb-3 text-primary"><i class="bi bi-info-circle-fill me-2"></i>Hospitality Event Details</h4>
+              </div>
+
+              <!-- Declaration / Disclaimer -->
+              <div class="col-12">
+                <div class="p-3 bg-light rounded-3 border border-warning-subtle text-dark-emphasis">
+                  <strong class="d-block mb-1 text-warning-emphasis"><i class="bi bi-shield-fill-exclamation me-1"></i> Hospitality Declaration</strong>
+                  <p class="mb-0 text-small">{{ $event->declaration ?? 'Standard hospitality event compliance terms apply.' }}</p>
+                </div>
+              </div>
+
+              <!-- Invite For -->
+              <div class="col-12 col-sm-6">
+                <label class="form-label">
+                  Invite For
+                  <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="invite_for"
+                  value="{{ old('invite_for', $event->invite_for) }}"
+                  class="form-control shadow-none rounded-3"
+                  required
+                  placeholder="e.g. Dinner and Awards Ceremony"
+                />
+              </div>
+
+              <!-- Invite Spouse -->
+              <div class="col-12 col-sm-6">
+                <label class="form-label">
+                  Invite Spouse
+                  <span class="text-danger">*</span>
+                  <small class="text-muted">({{ $event->invite_spouser ?? 'Spouse allowance' }})</small>
+                </label>
+                <select name="invite_spouse" class="form-select shadow-none rounded-3" required>
+                  <option value="" disabled selected>Select</option>
+                  <option value="Yes" {{ old('invite_spouse') === 'Yes' ? 'selected' : '' }}>Yes</option>
+                  <option value="No" {{ old('invite_spouse') === 'No' ? 'selected' : '' }}>No</option>
+                </select>
+              </div>
+
+              <!-- Government or State Owned Entity Official? -->
+              <div class="col-12">
+                <label class="form-label">
+                  Is Nominee a Government / State-Owned Entity Official?
+                  <span class="text-danger">*</span>
+                  <small class="text-muted">({{ $event->govt_company ?? 'Govt official criteria' }})</small>
+                </label>
+                <select name="govt_or_state_owned" class="form-select shadow-none rounded-3" required>
+                  <option value="" disabled selected>Select</option>
+                  <option value="Yes" {{ old('govt_or_state_owned') === 'Yes' ? 'selected' : '' }}>Yes</option>
+                  <option value="No" {{ old('govt_or_state_owned') === 'No' ? 'selected' : '' }}>No</option>
+                </select>
+              </div>
+            @endif
           </div>
         </div>
       </div>
@@ -318,9 +377,9 @@
               Ensure your CSV or Excel file matches our required schema before downloading the template.
             </p>
 
-            <button type="button" class="btn bg-white border w-100" onclick="alert('Downloading form template...')">
+            <a href="{{ route('nominator-download-template', $event->id) }}" class="btn bg-white border w-100 text-decoration-none d-inline-flex align-items-center justify-content-center">
               <i class="bi bi-download me-2"></i> Download Form
-            </button>
+            </a>
           </div>
 
           <!-- Upload form -->
@@ -329,7 +388,14 @@
               While uploading, ensure your file matches our required schema.
             </p>
 
-            <button type="button" class="btn btn-primary bg-primary border w-100" onclick="alert('Please use the upload option on the Active Events page.')">
+            <button 
+              type="button" 
+              class="btn btn-primary bg-primary border w-100" 
+              data-bs-toggle="modal" 
+              data-bs-target="#bulkUploadModal"
+              data-event-id="{{ $event->id }}"
+              data-event-name="{{ $event->name }}"
+            >
               <i class="bi bi-upload me-2"></i> Upload CSV
             </button>
           </div>
@@ -338,4 +404,6 @@
     </div>
   </div>
 </form>
+
+@include('layouts.bulk-upload-modal')
 @endsection

@@ -130,18 +130,19 @@
           Nominations list - {{ $event->name }}
         </h3>
         <div class="d-flex align-items-center gap-3">
-          <button
-            type="button"
-            class="btn btn-secondary bg-secondary text-black border-grey btn-sm rounded-3 border-0"
-            onclick="alert('Downloading sample template file...')"
+          <a
+            href="{{ route('nominator-download-template', $event->id) }}"
+            class="btn btn-secondary bg-secondary text-black border-grey btn-sm rounded-3 border-0 text-decoration-none d-inline-flex align-items-center"
           >
             <i class="bi bi-download me-2"></i> Download Sample File
-          </button>
+          </a>
           <button
             type="button"
             class="btn btn-primary btn-sm rounded-3"
             data-bs-toggle="modal"
             data-bs-target="#bulkUploadModal"
+            data-event-id="{{ $event->id }}"
+            data-event-name="{{ $event->name }}"
           >
             <i class="bi bi-upload me-2"></i>
             Bulk Upload
@@ -191,6 +192,9 @@
               <thead>
                 <tr class="table-light">
                   <th scope="col" style="min-width: 100px">Serial No.</th>
+                  <th scope="col" style="min-width: 150px">Invite Status</th>
+                  <th scope="col" style="min-width: 150px">Approval Status</th>
+                  <th scope="col" style="min-width: 150px">Action</th>
                   <th scope="col" style="min-width: 200px">GDPR Compliant</th>
                   <th scope="col" style="min-width: 200px">Event Name</th>
                   <th scope="col" style="min-width: 120px">Unit</th>
@@ -205,29 +209,12 @@
                   <th scope="col" style="min-width: 200px">Account Manager Email ID</th>
                   <th scope="col" style="min-width: 200px">Account Manager Email ID 2</th>
                   <th scope="col" style="min-width: 150px">Business/IT</th>
-                  <th scope="col" style="min-width: 150px">Invite Status</th>
-                  <th scope="col" style="min-width: 150px">Approval Status</th>
-                  <th scope="col" style="min-width: 150px">Action</th>
                 </tr>
               </thead>
               <tbody>
                 @forelse($event->nominees as $nominee)
                 <tr>
                   <td>{{ $loop->iteration }}</td>
-                  <td>{{ $nominee->gdpr_compliance }}</td>
-                  <td>{{ $event->name }}</td>
-                  <td>{{ $nominee->unit }}</td>
-                  <td>{{ $nominee->sub_unit }}</td>
-                  <td>{{ $nominee->full_name }}</td>
-                  <td>{{ $nominee->email }}</td>
-                  <td>{{ $nominee->company }}</td>
-                  <td>{{ $nominee->title }}</td>
-                  <td>{{ $nominee->job_level }}</td>
-                  <td>{{ $nominee->primary_account_manager_name }}</td>
-                  <td>{{ $nominee->primary_account_manager_email }}</td>
-                  <td>{{ $nominee->account_manager_email_1 }}</td>
-                  <td>{{ $nominee->account_manager_email_2 ?? 'N/A' }}</td>
-                  <td>{{ $nominee->business_or_it }}</td>
                   <td>{{ $nominee->invite_status }}</td>
                   <td>
                     @if($nominee->approval_status === 'approved')
@@ -258,6 +245,21 @@
                       </button>
                     @endif
                   </td>
+                  <td>{{ $nominee->gdpr_compliance }}</td>
+                  <td>{{ $event->name }}</td>
+                  <td>{{ $nominee->unit }}</td>
+                  <td>{{ $nominee->sub_unit }}</td>
+                  <td>{{ $nominee->full_name }}</td>
+                  <td>{{ $nominee->email }}</td>
+                  <td>{{ $nominee->company }}</td>
+                  <td>{{ $nominee->title }}</td>
+                  <td>{{ $nominee->job_level }}</td>
+                  <td>{{ $nominee->primary_account_manager_name }}</td>
+                  <td>{{ $nominee->primary_account_manager_email }}</td>
+                  <td>{{ $nominee->account_manager_email_1 }}</td>
+                  <td>{{ $nominee->account_manager_email_2 ?? 'N/A' }}</td>
+                  <td>{{ $nominee->business_or_it }}</td>
+                  
                 </tr>
                 @empty
                 <tr>
@@ -291,32 +293,7 @@
 </div>
 @endforeach
 
-<!-- Bulk Upload Modal -->
-<div class="modal fade" id="bulkUploadModal">
-  <div class="modal-dialog modal-dialog-centered" style="max-width: 400px">
-    <div class="modal-content">
-      <div class="modal-header border-0">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body pt-0">
-        <h3 class="modal-title fs-5 text-center mb-3">Upload your CSV File</h3>
-
-        <div class="upload-file rounded-3 d-flex flex-column gap-1 align-items-center py-4" style="border: 2px dashed #cbd5e1; background-color: #f8fafc;">
-          <button
-            type="button"
-            class="btn btn-primary btn-sm rounded-3 mb-2"
-            data-bs-toggle="modal"
-            data-bs-target="#uploadSuccessModal"
-          >
-            <i class="bi bi-upload me-2"></i>
-            Upload
-          </button>
-          <p class="text-small text-secondary mb-0">CSV or Excel file</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+@include('layouts.bulk-upload-modal')
 
 <!-- Bulk Upload Success Modal -->
 <div class="modal fade" id="uploadSuccessModal" tabindex="-1" aria-labelledby="uploadSuccessLabel" aria-hidden="true">
