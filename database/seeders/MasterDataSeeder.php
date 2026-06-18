@@ -66,5 +66,79 @@ class MasterDataSeeder extends Seeder
                 ]
             );
         }
+
+        // 3. Seed Units table
+        $units = [
+            ['name' => 'FS'],
+            ['name' => 'SURE'],
+            ['name' => 'Digital'],
+            ['name' => 'Operations'],
+        ];
+
+        foreach ($units as $unit) {
+            DB::table('units')->updateOrInsert(
+                ['name' => $unit['name']],
+                [
+                    'name' => $unit['name'],
+                    'is_active' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+
+        // Retrieve mapped IDs for subunits
+        $fsId = DB::table('units')->where('name', 'FS')->value('id');
+        $sureId = DB::table('units')->where('name', 'SURE')->value('id');
+        $digitalId = DB::table('units')->where('name', 'Digital')->value('id');
+
+        // 4. Seed Sub Units table
+        $subUnits = [
+            // FS
+            ['unit_id' => $fsId, 'name' => 'Banking'],
+            ['unit_id' => $fsId, 'name' => 'Insurance'],
+            ['unit_id' => $fsId, 'name' => 'Capital Markets'],
+            // SURE
+            ['unit_id' => $sureId, 'name' => 'Retail'],
+            ['unit_id' => $sureId, 'name' => 'Manufacturing'],
+            ['unit_id' => $sureId, 'name' => 'Logistics'],
+            // Digital
+            ['unit_id' => $digitalId, 'name' => 'Cloud'],
+            ['unit_id' => $digitalId, 'name' => 'Data Analytics'],
+            ['unit_id' => $digitalId, 'name' => 'AI/ML'],
+        ];
+
+        foreach ($subUnits as $subUnit) {
+            if ($subUnit['unit_id']) {
+                DB::table('sub_units')->updateOrInsert(
+                    ['unit_id' => $subUnit['unit_id'], 'name' => $subUnit['name']],
+                    [
+                        'unit_id' => $subUnit['unit_id'],
+                        'name' => $subUnit['name'],
+                        'is_active' => true,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]
+                );
+            }
+        }
+
+        // 5. Seed GDPR Compliances table
+        $gdprOptions = [
+            ['name' => 'Existing Business Relationship (Client)'],
+            ['name' => 'Legitimate Business Interest(Prospect)'],
+        ];
+
+        foreach ($gdprOptions as $option) {
+            DB::table('gdpr_compliances')->updateOrInsert(
+                ['name' => $option['name']],
+                [
+                    'name' => $option['name'],
+                    'is_active' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
     }
 }

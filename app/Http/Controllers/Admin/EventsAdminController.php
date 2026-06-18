@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use App\Models\Events;
+use App\Models\GdprCompliance;
 
 class EventsAdminController extends Controller
 {
     public function create()
     {
-        return view('admin.event-management');
+        $gdprOptions = GdprCompliance::where('is_active', true)->orderBy('name', 'asc')->get();
+        return view('admin.event-management', compact('gdprOptions'));
     }
 
     public function store(Request $request)

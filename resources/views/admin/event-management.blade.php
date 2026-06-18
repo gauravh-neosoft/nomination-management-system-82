@@ -106,8 +106,9 @@
         <div class="col-md-6">
           <label class="form-label fw-bold small" for="form-event-gdpr">GDPR Compliance</label>
           <select name="gdpr_compliance" class="form-select form-select-sm @error('gdpr_compliance') is-invalid @enderror" required id="form-event-gdpr">
-            <option value="Existing Business Relationship (Client)" {{ old('gdpr_compliance') === 'Existing Business Relationship (Client)' ? 'selected' : '' }}>Existing Business Relationship (Client)</option>
-            <option value="Legitimate Business Interest(Prospect)" {{ old('gdpr_compliance') === 'Legitimate Business Interest(Prospect)' ? 'selected' : '' }}>Legitimate Business Interest(Prospect)</option>
+            @foreach($gdprOptions as $option)
+              <option value="{{ $option->name }}" {{ old('gdpr_compliance') === $option->name ? 'selected' : '' }}>{{ $option->name }}</option>
+            @endforeach
           </select>
           @error('gdpr_compliance')
               <div class="invalid-feedback">{{ $message }}</div>
