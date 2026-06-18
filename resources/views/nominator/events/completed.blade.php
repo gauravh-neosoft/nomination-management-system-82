@@ -1,0 +1,233 @@
+@extends('layouts.app')
+
+@section('content')
+<h2 class="mb-0">Completed Events</h2>
+
+<p class="text-secondary">Successfully Completed Events</p>
+
+<!-- Filters -->
+<div class="border rounded-3 p-2 my-3 bg-white">
+  <div class="d-flex align-items-center gap-3">
+    <!-- Search -->
+    <div class="flex-grow-1">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-search text-secondary me-2"></i>
+        <input
+          type="text"
+          id="completedSearch"
+          class="form-control border-0 shadow-none p-0"
+          placeholder="Search by event name.."
+          onkeyup="filterCompletedEvents()"
+        />
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+      <label for="completedSort" class="fw-normal text-normal text-secondary">
+        Date:
+      </label>
+      <select
+        class="form-select form-select-sm shadow-none text-normal"
+        id="completedSort"
+        onchange="sortCompletedEvents()"
+      >
+        <option value="newest" selected>Newest</option>
+        <option value="oldest">Oldest</option>
+      </select>
+    </div>
+  </div>
+</div>
+<!-- Filters End -->
+
+<!-- Table -->
+<div class="border rounded-3 p-2">
+  <div class="table-responsive">
+    <table class="table table-borderless align-middle" id="completedEventsTable">
+      <thead>
+        <tr class="table-light">
+          <th scope="col" style="min-width: 70px">Serial No.</th>
+          <th scope="col" style="min-width: 200px">Event Name</th>
+          <th scope="col" style="min-width: 120px">Event Date</th>
+          <th scope="col" style="min-width: 200px">Nominees</th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse($events as $event)
+        <tr class="{{ $loop->iteration % 2 == 0 ? 'table-light' : '' }}" data-event-name="{{ strtolower($event->name) }}" data-created-at="{{ $event->created_at }}">
+          <td>{{ $loop->iteration }}</td>
+          <td class="fw-semibold">{{ $event->name }}</td>
+          <td>{{ $event->formatted_start_date }}</td>
+          <td>
+            <div class="d-flex justify-content-center gap-3 align-items-center">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-people text-primary me-2"></i><span>{{ $event->nominees_count }}</span>
+              </div>
+              <div class="vr text-light-grey"></div>
+              <button
+                class="btn btn-sm icon-bg-light-blue text-primary border-0"
+                data-bs-toggle="modal"
+                data-bs-target="#completedNominationModal-{{ $event->id }}"
+              >
+                View List
+              </button>
+            </div>
+          </td>
+        </tr>
+        @empty
+        <tr>
+          <td colspan="4" class="text-center text-muted py-4">No completed events found.</td>
+        </tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- Table ends -->
+
+<!-- Modals Container -->
+@foreach($events as $event)
+<!-- Nomination list modal for {{ $event->name }} -->
+<div class="modal fade" id="completedNominationModal-{{ $event->id }}">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header justify-content-between">
+        <h3 class="modal-title fs-5" id="completedNominationLabel-{{ $event->id }}">
+          Nominations list - {{ $event->name }}
+        </h3>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- Nominee Table -->
+        <div class="border rounded-3 p-2">
+          <div class="table-responsive">
+            <table class="table table-borderless align-middle">
+              <thead>
+                <tr class="table-light">
+                  <th scope="col" style="min-width: 100px">Serial No.</th>
+                  <th scope="col" style="min-width: 200px">GDPR Compliant</th>
+                  <th scope="col" style="min-width: 200px">Event Name</th>
+                  <th scope="col" style="min-width: 120px">Unit</th>
+                  <th scope="col" style="min-width: 120px">Sub Unit</th>
+                  <th scope="col" style="min-width: 200px">Name</th>
+                  <th scope="col" style="min-width: 200px">Email</th>
+                  <th scope="col" style="min-width: 150px">Company</th>
+                  <th scope="col" style="min-width: 120px">Job Title</th>
+                  <th scope="col" style="min-width: 200px">Job Level</th>
+                  <th scope="col" style="min-width: 200px">Primary Account Manager Name</th>
+                  <th scope="col" style="min-width: 200px">Primary Account Manager Email ID</th>
+                  <th scope="col" style="min-width: 200px">Account Manager Email ID</th>
+                  <th scope="col" style="min-width: 200px">Account Manager Email ID 2</th>
+                  <th scope="col" style="min-width: 150px">Business/IT</th>
+                  <th scope="col" style="min-width: 150px">Invite Status</th>
+                  <th scope="col" style="min-width: 150px">Approval Status</th>
+                  <th scope="col" style="min-width: 150px">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($event->nominees as $nominee)
+                <tr>
+                  <td>{{ $loop->iteration }}</td>
+                  <td>{{ $nominee->gdpr_compliance }}</td>
+                  <td>{{ $event->name }}</td>
+                  <td>{{ $nominee->unit }}</td>
+                  <td>{{ $nominee->sub_unit }}</td>
+                  <td>{{ $nominee->full_name }}</td>
+                  <td>{{ $nominee->email }}</td>
+                  <td>{{ $nominee->company }}</td>
+                  <td>{{ $nominee->title }}</td>
+                  <td>{{ $nominee->job_level }}</td>
+                  <td>{{ $nominee->primary_account_manager_name }}</td>
+                  <td>{{ $nominee->primary_account_manager_email }}</td>
+                  <td>{{ $nominee->account_manager_email_1 }}</td>
+                  <td>{{ $nominee->account_manager_email_2 ?? 'N/A' }}</td>
+                  <td>{{ $nominee->business_or_it }}</td>
+                  <td>{{ $nominee->invite_status }}</td>
+                  <td>
+                    @if($nominee->approval_status === 'approved')
+                      <div class="w-fit mx-auto badge rounded-pill bg-light-green text-success px-2 py-1 fw-normal d-flex align-items-center gap-2">
+                        <span class="rounded-circle bg-success d-inline-block" style="width: 7px; height: 7px"></span>
+                        Approved
+                      </div>
+                    @elseif($nominee->approval_status === 'pending')
+                      <div class="w-fit mx-auto badge rounded-pill bg-light-yellow text-warning px-2 py-1 fw-normal d-flex align-items-center gap-2">
+                        <span class="rounded-circle bg-warning d-inline-block" style="width: 7px; height: 7px"></span>
+                        Pending
+                      </div>
+                    @else
+                      <div class="w-fit mx-auto badge rounded-pill bg-light-red text-danger px-2 py-1 fw-normal d-flex align-items-center gap-2">
+                        <span class="rounded-circle bg-danger d-inline-block" style="width: 7px; height: 7px"></span>
+                        Rejected
+                      </div>
+                    @endif
+                  </td>
+                  <td>
+                    <button class="btn btn-link text-primary text-decoration-none p-0 border-0" onclick="alert('Add remark clicked')">
+                      Add Remark
+                    </button>
+                  </td>
+                </tr>
+                @empty
+                <tr>
+                  <td colspan="18" class="text-center text-muted py-4">No nominee entries found.</td>
+                </tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button
+          type="button"
+          data-bs-dismiss="modal"
+          class="btn btn-secondary bg-white text-black border-grey btn-sm"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
+@push('scripts')
+<script>
+function filterCompletedEvents() {
+    const query = document.getElementById('completedSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#completedEventsTable tbody tr');
+    
+    rows.forEach(row => {
+        const eventName = row.getAttribute('data-event-name');
+        if (eventName) {
+            if (eventName.includes(query)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+}
+
+function sortCompletedEvents() {
+    const sortBy = document.getElementById('completedSort').value;
+    const tbody = document.querySelector('#completedEventsTable tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr[data-created-at]'));
+    
+    rows.sort((a, b) => {
+        const dateA = new Date(a.getAttribute('data-created-at'));
+        const dateB = new Date(b.getAttribute('data-created-at'));
+        
+        return sortBy === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+    
+    // Clear and append sorted rows
+    rows.forEach(row => tbody.appendChild(row));
+}
+</script>
+@endpush
+
+@endsection

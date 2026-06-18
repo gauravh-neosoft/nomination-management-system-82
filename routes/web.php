@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NominatorController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,6 +23,17 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('profile', [DashboardController::class, 'profile'])->name('profile');
+
+    // Nominator Routes
+    Route::get('nominator/dashboard', [NominatorController::class, 'dashboard'])->name('nominator-dashboard');
+    Route::get('nominator/events/active', [NominatorController::class, 'activeEvents'])->name('nominator-active-events');
+    Route::get('nominator/events/completed', [NominatorController::class, 'completedEvents'])->name('nominator-completed-events');
+    Route::get('nominator/nominations', [NominatorController::class, 'nominations'])->name('nominator-nominations');
+    Route::get('nominator/events/{id}/nominate', [NominatorController::class, 'showNominationForm'])->name('nominator-nominate-form');
+    Route::post('nominator/events/{id}/nominate', [NominatorController::class, 'submitNomination'])->name('nominator-submit-nomination');
+    Route::get('nominator/events/{id}/download-template', [NominatorController::class, 'downloadTemplate'])->name('nominator-download-template');
+    Route::post('nominator/events/{id}/bulk-upload', [NominatorController::class, 'bulkUpload'])->name('nominator-bulk-upload');
 
     Route::get('admin/create-new-event', [EventsAdminController::class, 'create'])->name('admin-new-event-form');
     Route::post('admin/create-new-event', [EventsAdminController::class, 'store'])->name('admin-save-new-event');
