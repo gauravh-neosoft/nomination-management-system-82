@@ -53,7 +53,7 @@
         $role = 'Admin';
         }
         @endphp
-        <!-- <small class="text-white-50">{{ $role }}</small> -->
+        <small class="text-white-50">{{ $role }}</small>
       </div>
     </a>
   </div>

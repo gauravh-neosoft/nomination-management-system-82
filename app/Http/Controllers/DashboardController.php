@@ -20,7 +20,7 @@ class DashboardController extends Controller
         if (str_contains($email, 'unitspoc')) {
             return view('unit-spoc.dashboard.unit-spoc-dashboard');
         } elseif (str_contains($email, 'eventops')) {
-            return view('event-ops.dashboard.event-ops-dashboard');
+            return redirect()->route('event-ops-dashboard');
         } elseif (str_contains($email, 'admin')) {
             return redirect()->route('admin-dashboard');
         }

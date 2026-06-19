@@ -73,6 +73,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/reports', [AdminController::class, 'reports'])->name('admin-reports');
     Route::get('admin/domain', [AdminController::class, 'domain'])->name('admin-domain');
     Route::post('admin/events/{id}/delete', [AdminController::class, 'destroy'])->name('admin-delete-event');
+
+    // Event Ops Routes
+    Route::prefix('event-ops')->group(function () {
+        Route::get('dashboard', [\App\Http\Controllers\EventOpsController::class, 'dashboard'])->name('event-ops-dashboard');
+        Route::get('events/active', [\App\Http\Controllers\EventOpsController::class, 'activeEvents'])->name('event-ops-active-events');
+        Route::get('events/completed', [\App\Http\Controllers\EventOpsController::class, 'completedEvents'])->name('event-ops-completed-events');
+        Route::get('nominations', [\App\Http\Controllers\EventOpsController::class, 'nominations'])->name('event-ops-nominations');
+        Route::get('events/{id}/nominations', [\App\Http\Controllers\EventOpsController::class, 'eventNominations'])->name('event-ops-event-nominations');
+        Route::get('reports', [\App\Http\Controllers\EventOpsController::class, 'reports'])->name('event-ops-reports');
+        Route::get('dnc-contact', [\App\Http\Controllers\EventOpsController::class, 'dncContact'])->name('event-ops-dnc-contact');
+
+        Route::post('nominations/{id}/remark', [\App\Http\Controllers\EventOpsController::class, 'addRemark'])->name('event-ops-add-remark');
+        Route::post('nominations/{id}/update', [\App\Http\Controllers\EventOpsController::class, 'updateNomination'])->name('event-ops-update-nomination');
+        Route::post('dnc-contact/save', [\App\Http\Controllers\EventOpsController::class, 'saveDncContact'])->name('event-ops-save-dnc-contact');
+        Route::post('dnc-contact/{id}/delete', [\App\Http\Controllers\EventOpsController::class, 'deleteDncContact'])->name('event-ops-delete-dnc-contact');
+        Route::post('dnc-domain/save', [\App\Http\Controllers\EventOpsController::class, 'saveDncDomain'])->name('event-ops-save-dnc-domain');
+        Route::post('dnc-domain/{id}/delete', [\App\Http\Controllers\EventOpsController::class, 'deleteDncDomain'])->name('event-ops-delete-dnc-domain');
+    });
 });
 
 
