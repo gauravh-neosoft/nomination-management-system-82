@@ -19,12 +19,106 @@ class AdminController extends Controller
 
     public function roles()
     {
-        return view('admin.roles');
+        $roles = \App\Models\Role::orderBy('id', 'asc')->get();
+        return view('admin.roles', compact('roles'));
+    }
+
+    public function storeRole(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:100|unique:roles,display_name',
+        ]);
+
+        $displayName = $validated['name'];
+        $name = strtolower(str_replace(' ', '_', $displayName));
+
+        $role = \App\Models\Role::create([
+            'name' => $name,
+            'display_name' => $displayName,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Role created successfully.',
+            'role' => $role
+        ]);
+    }
+
+    public function deleteRole($id)
+    {
+        $role = \App\Models\Role::findOrFail($id);
+        
+        if ($role->name === 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'System Admin role cannot be deleted.'
+            ], 403);
+        }
+
+        $role->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Role deleted successfully.'
+        ]);
     }
 
     public function users()
     {
-        return view('admin.users');
+        $users = \App\Models\User::with('role')
+            ->whereHas('role', function ($query) {
+                $query->where('name', '!=', 'admin');
+            })
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return view('admin.users', compact('users'));
+    }
+
+    public function createUserForm()
+    {
+        $roles = \App\Models\Role::orderBy('display_name', 'asc')->get();
+        return view('admin.create-user', compact('roles'));
+    }
+
+    public function storeUser(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'contact_no' => 'nullable|string|max:100',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8',
+            'role_id' => 'required|exists:roles,id',
+            'sso_id' => 'nullable|string|max:255|unique:users,sso_id',
+            'status' => 'required|in:0,1',
+        ]);
+
+        \App\Models\User::create([
+            'name' => $validated['name'],
+            'last_name' => $validated['last_name'],
+            'contact_no' => $validated['contact_no'] ?: null,
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+            'role_id' => $validated['role_id'],
+            'sso_id' => $validated['sso_id'] ?: null,
+            'status' => (int) $validated['status'],
+        ]);
+
+        return redirect()->route('admin-users')->with('success', 'User created successfully.');
+    }
+
+    public function toggleUserStatus($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        $user->status = $user->status == 1 ? 0 : 1;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User status updated successfully.',
+            'status' => $user->status
+        ]);
     }
 
     public function events()

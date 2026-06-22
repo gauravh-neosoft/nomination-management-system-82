@@ -19,7 +19,10 @@ class NomineeAndEventSeeder extends Seeder
         $nominator = User::firstOrCreate(
             ['email' => 'gaurav@nominator.com'],
             [
-                'name' => 'Gaurav Heda',
+                'name' => 'Gaurav',
+                'last_name' => 'Heda',
+                'contact_no' => '+1234567890',
+                'status' => 1,
                 'password' => bcrypt('test@123'),
                 'role_id' => $roleId
             ]

@@ -40,7 +40,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
     Route::get('admin/roles', [AdminController::class, 'roles'])->name('admin-roles');
+    Route::post('admin/roles', [AdminController::class, 'storeRole'])->name('admin-roles-store');
+    Route::post('admin/roles/{id}/delete', [AdminController::class, 'deleteRole'])->name('admin-roles-delete');
     Route::get('admin/users', [AdminController::class, 'users'])->name('admin-users');
+    Route::get('admin/users/create', [AdminController::class, 'createUserForm'])->name('admin-users-create');
+    Route::post('admin/users/store', [AdminController::class, 'storeUser'])->name('admin-users-store');
+    Route::post('admin/users/{id}/toggle', [AdminController::class, 'toggleUserStatus'])->name('admin-users-toggle');
     Route::get('admin/events', [AdminController::class, 'events'])->name('admin-events');
     Route::get('admin/queue', [AdminController::class, 'queue'])->name('admin-queue');
     Route::get('admin/contacts', [AdminController::class, 'contacts'])->name('admin-contacts');
@@ -95,5 +100,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('dnc-domain/{id}/delete', [\App\Http\Controllers\EventOpsController::class, 'deleteDncDomain'])->name('event-ops-delete-dnc-domain');
     });
 });
+
+
+
+
 
 

@@ -26,11 +26,27 @@ class LoginController extends Controller
         // Fetch corresponding role ID
         $roleId = DB::table('roles')->where('name', $roleName)->value('id');
 
+        // Parse names from the email
+        $parts = explode('@', $email);
+        $fullName = ucwords(current($parts));
+        $nameParts = explode('.', $fullName);
+        $firstName = $nameParts[0] ?? $fullName;
+        $lastName = $nameParts[1] ?? 'SSO';
+
+        // Check if the user already exists and is inactive
+        $existingUser = User::where('email', $email)->first();
+        if ($existingUser && $existingUser->status == 0) {
+            return redirect()->back()->withErrors(['user_email' => 'Your account is inactive. Please contact the administrator.']);
+        }
+
         // Find or dynamically update/create the user to simulate SSO login with the correct role
         $user = User::updateOrCreate(
             ['email' => $email],
             [
-                'name' => ucwords(current(explode('@', $email))),
+                'name' => $firstName,
+                'last_name' => $lastName,
+                'contact_no' => '+1234567890',
+                'status' => 1,
                 'password' => bcrypt('test@123'),
                 'role_id' => $roleId
             ]

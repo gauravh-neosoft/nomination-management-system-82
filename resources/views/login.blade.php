@@ -71,6 +71,16 @@
             <form action="{{ route('login') }}" method="post" class="w-100">
               @csrf
 
+              @if ($errors->any())
+                  <div class="alert alert-danger py-2 px-3 fs-08 mb-3 rounded-3 shadow-sm border-0">
+                      <ul class="mb-0 ps-3">
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+              @endif
+
               <!-- Role Testing Email Selector -->
               <div class="mb-3">
                 <label for="user_email" class="form-label text-dark fw-bold">Email address / ID</label>
