@@ -47,6 +47,12 @@
     <span class="fw-semibold fs-09">Master Data (MDM)</span>
   </a>
   
+  <!-- Dropdown Management -->
+  <a href="{{ route('admin-dropdown') }}" class="nav-link text-white d-flex align-items-center {{ Route::currentRouteName() === 'admin-dropdown' ? 'active-nav-link' : '' }}">
+    <i class="bi bi-list-ul me-2"></i>
+    <span class="fw-semibold fs-09">Dropdown Management</span>
+  </a>
+  
   <!-- Content Manager (CMS) -->
   <a href="{{ route('admin-cms') }}" class="nav-link text-white d-flex align-items-center {{ Route::currentRouteName() === 'admin-cms' ? 'active-nav-link' : '' }}">
     <i class="bi bi-file-earmark-richtext me-2"></i>

@@ -67,11 +67,12 @@ class AdminController extends Controller
 
     public function mdm()
     {
-        $units = Unit::orderBy('name', 'asc')->get();
-        $subUnits = SubUnit::with('unit')->orderBy('name', 'asc')->get();
-        $gdprOptions = GdprCompliance::orderBy('name', 'asc')->get();
+        return view('admin.mdm');
+    }
 
-        return view('admin.mdm', compact('units', 'subUnits', 'gdprOptions'));
+    public function dropdown()
+    {
+        return view('admin.dropdown');
     }
 
     // --- Units CRUD ---
