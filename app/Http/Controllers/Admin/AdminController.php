@@ -17,51 +17,7 @@ class AdminController extends Controller
         return view('admin.dashboard.admin-dashboard');
     }
 
-    public function roles()
-    {
-        $roles = \App\Models\Role::orderBy('id', 'asc')->get();
-        return view('admin.roles', compact('roles'));
-    }
 
-    public function storeRole(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:100|unique:roles,display_name',
-        ]);
-
-        $displayName = $validated['name'];
-        $name = strtolower(str_replace(' ', '_', $displayName));
-
-        $role = \App\Models\Role::create([
-            'name' => $name,
-            'display_name' => $displayName,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Role created successfully.',
-            'role' => $role
-        ]);
-    }
-
-    public function deleteRole($id)
-    {
-        $role = \App\Models\Role::findOrFail($id);
-        
-        if ($role->name === 'admin') {
-            return response()->json([
-                'success' => false,
-                'message' => 'System Admin role cannot be deleted.'
-            ], 403);
-        }
-
-        $role->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Role deleted successfully.'
-        ]);
-    }
 
     public function users()
     {

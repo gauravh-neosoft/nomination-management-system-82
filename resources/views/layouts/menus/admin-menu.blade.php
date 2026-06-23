@@ -4,13 +4,6 @@
     <i class="bi bi-border-all me-2"></i>
     <span class="fw-semibold fs-09">Dashboard</span>
   </a>
-  
-  <!-- Role & Access Management -->
-  <a href="{{ route('admin-roles') }}" class="nav-link text-white d-flex align-items-center {{ Route::currentRouteName() === 'admin-roles' ? 'active-nav-link' : '' }}">
-    <i class="bi bi-shield-lock me-2"></i>
-    <span class="fw-semibold fs-09">Role & Access</span>
-  </a>
-  
   <!-- User Directory -->
   <a href="{{ route('admin-users') }}" class="nav-link text-white d-flex align-items-center {{ Route::currentRouteName() === 'admin-users' ? 'active-nav-link' : '' }}">
     <i class="bi bi-person-square me-2"></i>

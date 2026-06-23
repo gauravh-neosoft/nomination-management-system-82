@@ -11,6 +11,24 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/send-test-mail', function () {
+    try {
+        \Illuminate\Support\Facades\Mail::raw('This is a test email from the Nomination Management System to verify mail functionality.', function ($message) {
+            $message->to('hedagaurav93@gmail.com')
+                    ->subject('Test Email Functionality');
+        });
+        return response()->json([
+            'success' => true,
+            'message' => 'Test mail successfully sent to hedagaurav93@gmail.com! Please check your storage/logs/laravel.log file (since MAIL_MAILER=log is configured) or your inbox if you have SMTP configured.'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send test mail: ' . $e->getMessage()
+        ], 500);
+    }
+})->name('send-test-mail');
+
 
 Route::get('/login', function () {
     return view('login');
@@ -39,9 +57,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('admin/create-new-event', [EventsAdminController::class, 'store'])->name('admin-save-new-event');
 
     Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
-    Route::get('admin/roles', [AdminController::class, 'roles'])->name('admin-roles');
-    Route::post('admin/roles', [AdminController::class, 'storeRole'])->name('admin-roles-store');
-    Route::post('admin/roles/{id}/delete', [AdminController::class, 'deleteRole'])->name('admin-roles-delete');
     Route::get('admin/users', [AdminController::class, 'users'])->name('admin-users');
     Route::get('admin/users/create', [AdminController::class, 'createUserForm'])->name('admin-users-create');
     Route::post('admin/users/store', [AdminController::class, 'storeUser'])->name('admin-users-store');

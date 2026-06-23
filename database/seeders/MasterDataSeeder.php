@@ -15,6 +15,12 @@ class MasterDataSeeder extends Seeder
         // 1. Seed Roles table
         $roles = [
             [
+                'name' => 'super_admin',
+                'display_name' => 'Super Admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'name' => 'admin',
                 'display_name' => 'Admin',
                 'created_at' => now(),
