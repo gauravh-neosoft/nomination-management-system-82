@@ -171,9 +171,18 @@ class NominatorController extends Controller
             ->where('nominator_id', $userId)
             ->count();
 
-        if ($currentCount >= $event->max_nominees_per_form) {
+        // Get effective limit (custom vs default)
+        $customLimit = DB::table('nominator_event_limits')
+            ->where('event_id', $event->id)
+            ->where('nominator_id', $userId)
+            ->whereNull('deleted_at')
+            ->first();
+        
+        $effectiveLimit = $customLimit ? (int)$customLimit->max_nominees : (int)$event->max_nominees_per_form;
+
+        if ($currentCount >= $effectiveLimit) {
             return redirect()->back()
-                ->withErrors(['limit' => 'You have reached the maximum nominee limit (' . $event->max_nominees_per_form . ') for this event.'])
+                ->withErrors(['limit' => 'You have reached the maximum nominee limit (' . $effectiveLimit . ') for this event.'])
                 ->withInput();
         }
 
@@ -370,6 +379,15 @@ class NominatorController extends Controller
             ->where('nominator_id', $userId)
             ->count();
 
+        // Get effective limit (custom vs default)
+        $customLimit = DB::table('nominator_event_limits')
+            ->where('event_id', $event->id)
+            ->where('nominator_id', $userId)
+            ->whereNull('deleted_at')
+            ->first();
+        
+        $effectiveLimit = $customLimit ? (int)$customLimit->max_nominees : (int)$event->max_nominees_per_form;
+
         $successCount = 0;
         $failedCount = 0;
         $failedList = [];
@@ -471,8 +489,8 @@ class NominatorController extends Controller
                 }
 
                 // Check max nomination limit
-                if ($initialCount + $successCount >= $event->max_nominees_per_form) {
-                    throw new \Exception("Nomination limit of " . $event->max_nominees_per_form . " reached for this event.");
+                if ($initialCount + $successCount >= $effectiveLimit) {
+                    throw new \Exception("Nomination limit of " . $effectiveLimit . " reached for this event.");
                 }
 
                 // Insert row

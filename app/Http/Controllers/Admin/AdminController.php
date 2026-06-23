@@ -7,11 +7,36 @@ use App\Models\Events;
 use App\Models\Unit;
 use App\Models\SubUnit;
 use App\Models\GdprCompliance;
+use App\Models\NominatorEventLimit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 
 class AdminController extends Controller
 {
+    public function __construct()
+    {
+        try {
+            if (Schema::hasTable('units') && !Schema::hasColumn('units', 'deleted_at')) {
+                Schema::table('units', function ($table) {
+                    $table->softDeletes();
+                });
+            }
+            if (Schema::hasTable('sub_units') && !Schema::hasColumn('sub_units', 'deleted_at')) {
+                Schema::table('sub_units', function ($table) {
+                    $table->softDeletes();
+                });
+            }
+            if (Schema::hasTable('gdpr_compliances') && !Schema::hasColumn('gdpr_compliances', 'deleted_at')) {
+                Schema::table('gdpr_compliances', function ($table) {
+                    $table->softDeletes();
+                });
+            }
+        } catch (\Exception $e) {
+            // Ignore
+        }
+    }
+
     public function dashboard()
     {
         return view('admin.dashboard.admin-dashboard');
@@ -79,17 +104,22 @@ class AdminController extends Controller
 
     public function events()
     {
-        // Seed default events if events table is empty
-
         $events = Events::orderBy('created_at', 'desc')->get()->map(function ($event) {
+            // Keep raw values for editing inputs
+            $event->raw_start_date = Carbon::parse($event->getRawOriginal('start_date'))->format('Y-m-d');
+            $event->raw_end_date = Carbon::parse($event->getRawOriginal('end_date'))->format('Y-m-d');
+            $event->raw_nomination_deadline = Carbon::parse($event->getRawOriginal('nomination_deadline'))->format('Y-m-d\TH:i');
+
+            // Formatted values for display
             $event->start_date = Carbon::parse($event->start_date)->format('d-m-Y');
             $event->end_date = Carbon::parse($event->end_date)->format('d-m-Y');
-            $event->nomination_deadline = Carbon::parse($event->nomination_deadline)->format('d-m-Y');
+            $event->nomination_deadline = Carbon::parse($event->nomination_deadline)->format('d-m-Y H:i');
             return $event;
         });
 
-        // dd($events);
-        return view('admin.events', compact('events'));
+        $gdprOptions = GdprCompliance::where('is_active', true)->orderBy('name', 'asc')->get();
+
+        return view('admin.events', compact('events', 'gdprOptions'));
     }
 
     public function destroy($id)
@@ -174,6 +204,7 @@ class AdminController extends Controller
     public function deleteUnit($id)
     {
         $unit = Unit::findOrFail($id);
+        $unit->subUnits()->delete();
         $unit->delete();
 
         return response()->json(['success' => true, 'message' => 'Business Unit and associated sub-units deleted successfully.']);
@@ -318,5 +349,96 @@ class AdminController extends Controller
     public function domain()
     {
         return view('admin.domain');
+    }
+
+    public function nominatorLimits()
+    {
+        $limits = NominatorEventLimit::with(['event', 'nominator', 'creator', 'updater'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        $events = Events::where('status', 'ongoing')->orderBy('name', 'asc')->get();
+        
+        $nominators = \App\Models\User::whereHas('role', function ($query) {
+            $query->where('name', 'nominator');
+        })->orderBy('name', 'asc')->get();
+
+        return view('admin.nominator-limits', compact('limits', 'events', 'nominators'));
+    }
+
+    public function storeNominatorLimit(Request $request)
+    {
+        $validated = $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'nominator_id' => 'required|exists:users,id',
+            'max_nominees' => 'required|integer|min:0',
+        ]);
+
+        $existing = NominatorEventLimit::withTrashed()
+            ->where('event_id', $validated['event_id'])
+            ->where('nominator_id', $validated['nominator_id'])
+            ->first();
+
+        if ($existing) {
+            if ($existing->trashed()) {
+                $existing->restore();
+                $existing->update([
+                    'max_nominees' => $validated['max_nominees'],
+                    'updated_by' => auth()->id(),
+                ]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Custom limit restored and updated successfully.'
+                ]);
+            }
+            return response()->json([
+                'success' => false,
+                'message' => 'A custom limit already exists for this nominator on the selected event.'
+            ], 422);
+        }
+
+        $limit = NominatorEventLimit::create([
+            'event_id' => $validated['event_id'],
+            'nominator_id' => $validated['nominator_id'],
+            'max_nominees' => $validated['max_nominees'],
+            'created_by' => auth()->id(),
+            'updated_by' => auth()->id(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Custom limit created successfully.',
+            'limit' => $limit->load(['event', 'nominator'])
+        ]);
+    }
+
+    public function updateNominatorLimit(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'max_nominees' => 'required|integer|min:0',
+        ]);
+
+        $limit = NominatorEventLimit::findOrFail($id);
+        $limit->update([
+            'max_nominees' => $validated['max_nominees'],
+            'updated_by' => auth()->id(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Custom limit updated successfully.',
+            'limit' => $limit->load(['event', 'nominator'])
+        ]);
+    }
+
+    public function deleteNominatorLimit($id)
+    {
+        $limit = NominatorEventLimit::findOrFail($id);
+        $limit->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Custom limit deleted successfully.'
+        ]);
     }
 }

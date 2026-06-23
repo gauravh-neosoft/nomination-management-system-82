@@ -69,9 +69,15 @@ return new class extends Migration
                 ->default('ongoing')
                 ->comment('Lifecycle state parameters');
             
-            $table->foreignId('last_updated_by')
+            $table->foreignId('created_by')
                 ->nullable()
-                ->comment('Foreign key referencing users table (last updated this event)')
+                ->comment('Foreign key referencing users table (who created this event)')
+                ->constrained('users')
+                ->onDelete('set null');
+
+            $table->foreignId('updated_by')
+                ->nullable()
+                ->comment('Foreign key referencing users table (who last updated this event)')
                 ->constrained('users')
                 ->onDelete('set null');
             

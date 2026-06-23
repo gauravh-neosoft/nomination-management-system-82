@@ -16,6 +16,12 @@
     <span class="fw-semibold fs-09">Event Management</span>
   </a>
   
+  <!-- Nominator Limits -->
+  <a href="{{ route('admin-nominator-limits') }}" class="nav-link text-white d-flex align-items-center {{ Route::currentRouteName() === 'admin-nominator-limits' ? 'active-nav-link' : '' }}">
+    <i class="bi bi-person-exclamation me-2"></i>
+    <span class="fw-semibold fs-09">Nominator Limits</span>
+  </a>
+  
   <!-- Nominator Queue -->
   <a href="{{ route('admin-queue') }}" class="nav-link text-white d-flex align-items-center {{ Route::currentRouteName() === 'admin-queue' ? 'active-nav-link' : '' }}">
     <i class="bi bi-list-stars me-2"></i>

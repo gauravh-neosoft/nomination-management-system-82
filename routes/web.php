@@ -96,6 +96,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/reports', [AdminController::class, 'reports'])->name('admin-reports');
     Route::get('admin/domain', [AdminController::class, 'domain'])->name('admin-domain');
     Route::post('admin/events/{id}/delete', [AdminController::class, 'destroy'])->name('admin-delete-event');
+    Route::post('admin/events/{id}/update', [EventsAdminController::class, 'update'])->name('admin-update-event');
+
+    // Nominator Event Limits CRUD
+    Route::get('admin/nominator-limits', [AdminController::class, 'nominatorLimits'])->name('admin-nominator-limits');
+    Route::post('admin/nominator-limits', [AdminController::class, 'storeNominatorLimit'])->name('admin-nominator-limits-store');
+    Route::post('admin/nominator-limits/{id}/update', [AdminController::class, 'updateNominatorLimit'])->name('admin-nominator-limits-update');
+    Route::post('admin/nominator-limits/{id}/delete', [AdminController::class, 'deleteNominatorLimit'])->name('admin-nominator-limits-delete');
 
     // Event Ops Routes
     Route::prefix('event-ops')->group(function () {
