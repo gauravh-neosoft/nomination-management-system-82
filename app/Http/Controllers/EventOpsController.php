@@ -433,4 +433,140 @@ class EventOpsController extends Controller
         DncDomain::findOrFail($id)->delete();
         return redirect()->back()->with('success', 'DNC Domain deleted successfully.');
     }
+
+    public function uploadDncContact(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv,txt|max:5120',
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $sheets = \Maatwebsite\Excel\Facades\Excel::toArray(new \App\Imports\NomineesImport, $file);
+            $rows = $sheets[0] ?? [];
+
+            if (count($rows) <= 1) {
+                return redirect()->back()->withErrors(['upload_error' => 'The uploaded file contains no contact records.']);
+            }
+
+            $headers = array_map(function($h) {
+                return strtolower(trim(str_replace([' ', '_', '-'], '', $h)));
+            }, $rows[0]);
+
+            $nameIdx = array_search('name', $headers);
+            $emailIdx = array_search('email', $headers);
+            if ($emailIdx === false) {
+                $emailIdx = array_search('emailaddress', $headers);
+            }
+
+            if ($emailIdx === false) {
+                return redirect()->back()->withErrors(['upload_error' => 'The uploaded file must contain an "Email" column.']);
+            }
+
+            $successCount = 0;
+            $duplicateCount = 0;
+
+            for ($i = 1; $i < count($rows); $i++) {
+                $row = $rows[$i];
+                if (empty($row) || !isset($row[$emailIdx]) || trim((string)$row[$emailIdx]) === '') {
+                    continue;
+                }
+
+                $email = strtolower(trim((string)$row[$emailIdx]));
+                $name = $nameIdx !== false && isset($row[$nameIdx]) && trim((string)$row[$nameIdx]) !== '' ? trim((string)$row[$nameIdx]) : explode('@', $email)[0];
+
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    continue;
+                }
+
+                // Check if email already exists in DncContact
+                $exists = DncContact::where('email', $email)->exists();
+                if ($exists) {
+                    $duplicateCount++;
+                    continue;
+                }
+
+                DncContact::create([
+                    'name' => $name,
+                    'email' => $email,
+                ]);
+                $successCount++;
+            }
+
+            return redirect()->back()->with('success', "Imported {$successCount} DNC contacts successfully." . ($duplicateCount > 0 ? " ({$duplicateCount} duplicates skipped)." : ""));
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['upload_error' => 'Error importing file: ' . $e->getMessage()]);
+        }
+    }
+
+    public function uploadDncDomain(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv,txt|max:5120',
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $sheets = \Maatwebsite\Excel\Facades\Excel::toArray(new \App\Imports\NomineesImport, $file);
+            $rows = $sheets[0] ?? [];
+
+            if (count($rows) <= 1) {
+                return redirect()->back()->withErrors(['upload_error' => 'The uploaded file contains no domain records.']);
+            }
+
+            $headers = array_map(function($h) {
+                return strtolower(trim(str_replace([' ', '_', '-'], '', $h)));
+            }, $rows[0]);
+
+            $accountIdx = array_search('accountname', $headers);
+            if ($accountIdx === false) {
+                $accountIdx = array_search('account', $headers);
+            }
+            if ($accountIdx === false) {
+                $accountIdx = array_search('company', $headers);
+            }
+            if ($accountIdx === false) {
+                $accountIdx = array_search('companyname', $headers);
+            }
+
+            $domainIdx = array_search('domain', $headers);
+            if ($domainIdx === false) {
+                $domainIdx = array_search('domainname', $headers);
+            }
+
+            if ($domainIdx === false) {
+                return redirect()->back()->withErrors(['upload_error' => 'The uploaded file must contain a "Domain" column.']);
+            }
+
+            $successCount = 0;
+            $duplicateCount = 0;
+
+            for ($i = 1; $i < count($rows); $i++) {
+                $row = $rows[$i];
+                if (empty($row) || !isset($row[$domainIdx]) || trim((string)$row[$domainIdx]) === '') {
+                    continue;
+                }
+
+                $domain = strtolower(trim((string)$row[$domainIdx]));
+                $accountName = $accountIdx !== false && isset($row[$accountIdx]) && trim((string)$row[$accountIdx]) !== '' ? trim((string)$row[$accountIdx]) : 'Unknown';
+
+                // Check if domain already exists in DncDomain
+                $exists = DncDomain::where('domain', $domain)->exists();
+                if ($exists) {
+                    $duplicateCount++;
+                    continue;
+                }
+
+                DncDomain::create([
+                    'account_name' => $accountName,
+                    'domain' => $domain,
+                ]);
+                $successCount++;
+            }
+
+            return redirect()->back()->with('success', "Imported {$successCount} DNC domains successfully." . ($duplicateCount > 0 ? " ({$duplicateCount} duplicates skipped)." : ""));
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['upload_error' => 'Error importing file: ' . $e->getMessage()]);
+        }
+    }
 }
