@@ -15,24 +15,10 @@ class EventOpsController extends Controller
 {
     public function __construct()
     {
-        // Dynamically run migrations and seed if needed since console command is blocked by group policy
+        // Dynamically run migrations if needed since console command is blocked by group policy
         try {
             if (!Schema::hasTable('dnc_contacts') || !Schema::hasTable('dnc_domains')) {
                 \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-            }
-            
-            // Seed default DNC contacts if table empty
-            if (Schema::hasTable('dnc_contacts') && DncContact::count() === 0) {
-                DncContact::create(['name' => 'Juhi Singh', 'email' => 'juhisingh123@gmail.com']);
-                DncContact::create(['name' => 'Bruce Wayne', 'email' => 'bruce@waynecorp.com']);
-                DncContact::create(['name' => 'Clark Kent', 'email' => 'clark@dailyplanet.com']);
-            }
-            
-            // Seed default DNC domains if table empty
-            if (Schema::hasTable('dnc_domains') && DncDomain::count() === 0) {
-                DncDomain::create(['account_name' => 'Adobe', 'domain' => 'www.adobe.com']);
-                DncDomain::create(['account_name' => 'Cisco', 'domain' => 'www.cisco.com']);
-                DncDomain::create(['account_name' => 'Wayne Enterprises', 'domain' => 'www.waynecorp.com']);
             }
         } catch (\Exception $e) {
             // Log or ignore if DB not ready
@@ -395,13 +381,20 @@ class EventOpsController extends Controller
         $validated = $request->validate([
             'id' => 'nullable|integer',
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:dnc_contacts,email,' . ($request->id ?? 'NULL'),
+            'email' => 'required|email|max:255|unique:dnc_contacts,email,' . ($request->filled('id') ? $request->id : 'NULL'),
         ]);
 
-        DncContact::updateOrCreate(
-            ['id' => $validated['id'] ?? null],
-            ['name' => $validated['name'], 'email' => $validated['email']]
-        );
+        if ($request->filled('id')) {
+            DncContact::findOrFail($request->id)->update([
+                'name' => $validated['name'],
+                'email' => $validated['email']
+            ]);
+        } else {
+            DncContact::create([
+                'name' => $validated['name'],
+                'email' => $validated['email']
+            ]);
+        }
 
         return redirect()->back()->with('success', 'DNC Contact saved successfully.');
     }
@@ -417,13 +410,20 @@ class EventOpsController extends Controller
         $validated = $request->validate([
             'id' => 'nullable|integer',
             'account_name' => 'required|string|max:255',
-            'domain' => 'required|string|max:255|unique:dnc_domains,domain,' . ($request->id ?? 'NULL'),
+            'domain' => 'required|string|max:255|unique:dnc_domains,domain,' . ($request->filled('id') ? $request->id : 'NULL'),
         ]);
 
-        DncDomain::updateOrCreate(
-            ['id' => $validated['id'] ?? null],
-            ['account_name' => $validated['account_name'], 'domain' => $validated['domain']]
-        );
+        if ($request->filled('id')) {
+            DncDomain::findOrFail($request->id)->update([
+                'account_name' => $validated['account_name'],
+                'domain' => $validated['domain']
+            ]);
+        } else {
+            DncDomain::create([
+                'account_name' => $validated['account_name'],
+                'domain' => $validated['domain']
+            ]);
+        }
 
         return redirect()->back()->with('success', 'DNC Domain saved successfully.');
     }
