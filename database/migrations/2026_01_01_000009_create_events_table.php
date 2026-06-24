@@ -75,7 +75,7 @@ return new class extends Migration
                 ->constrained('users')
                 ->onDelete('set null');
 
-            $table->foreignId('updated_by')
+            $table->foreignId('last_updated')
                 ->nullable()
                 ->comment('Foreign key referencing users table (who last updated this event)')
                 ->constrained('users')

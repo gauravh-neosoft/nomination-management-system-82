@@ -10,7 +10,7 @@ class Unit extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'is_active', 'created_by', 'updated_by'];
+    protected $fillable = ['name', 'is_active', 'created_by', 'last_updated_by'];
 
     /**
      * Get the sub units associated with this business unit.

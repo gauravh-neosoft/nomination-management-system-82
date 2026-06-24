@@ -185,7 +185,7 @@ class AdminController extends Controller
         $unit = Unit::findOrFail($id);
         $unit->update([
             'name' => $validated['name'],
-            'updated_by' => auth()->id(),
+            'last_updated_by' => auth()->id(),
         ]);
 
         return response()->json(['success' => true, 'message' => 'Business Unit updated successfully.', 'unit' => $unit]);
@@ -195,7 +195,7 @@ class AdminController extends Controller
     {
         $unit = Unit::findOrFail($id);
         $unit->is_active = !$unit->is_active;
-        $unit->updated_by = auth()->id();
+        $unit->last_updated_by = auth()->id();
         $unit->save();
 
         return response()->json(['success' => true, 'message' => 'Business Unit status updated.', 'is_active' => $unit->is_active]);
@@ -258,7 +258,7 @@ class AdminController extends Controller
         $subUnit->update([
             'unit_id' => $validated['unit_id'],
             'name' => $validated['name'],
-            'updated_by' => auth()->id(),
+            'last_updated_by' => auth()->id(),
         ]);
 
         return response()->json(['success' => true, 'message' => 'Sub Unit updated successfully.', 'sub_unit' => $subUnit->load('unit')]);
@@ -268,7 +268,7 @@ class AdminController extends Controller
     {
         $subUnit = SubUnit::findOrFail($id);
         $subUnit->is_active = !$subUnit->is_active;
-        $subUnit->updated_by = auth()->id();
+        $subUnit->last_updated_by = auth()->id();
         $subUnit->save();
 
         return response()->json(['success' => true, 'message' => 'Sub Unit status updated.', 'is_active' => $subUnit->is_active]);
@@ -312,7 +312,7 @@ class AdminController extends Controller
         $gdpr = GdprCompliance::findOrFail($id);
         $gdpr->update([
             'name' => $validated['name'],
-            'updated_by' => auth()->id(),
+            'last_updated_by' => auth()->id(),
         ]);
 
         return response()->json(['success' => true, 'message' => 'GDPR compliance option updated successfully.', 'gdpr' => $gdpr]);
@@ -322,7 +322,7 @@ class AdminController extends Controller
     {
         $gdpr = GdprCompliance::findOrFail($id);
         $gdpr->is_active = !$gdpr->is_active;
-        $gdpr->updated_by = auth()->id();
+        $gdpr->last_updated_by = auth()->id();
         $gdpr->save();
 
         return response()->json(['success' => true, 'message' => 'GDPR compliance status updated.', 'is_active' => $gdpr->is_active]);
@@ -384,7 +384,7 @@ class AdminController extends Controller
                 $existing->restore();
                 $existing->update([
                     'max_nominees' => $validated['max_nominees'],
-                    'updated_by' => auth()->id(),
+                    'last_updated_by' => auth()->id(),
                 ]);
                 return response()->json([
                     'success' => true,
@@ -402,7 +402,7 @@ class AdminController extends Controller
             'nominator_id' => $validated['nominator_id'],
             'max_nominees' => $validated['max_nominees'],
             'created_by' => auth()->id(),
-            'updated_by' => auth()->id(),
+            'last_updated_by' => auth()->id(),
         ]);
 
         return response()->json([
@@ -421,7 +421,7 @@ class AdminController extends Controller
         $limit = NominatorEventLimit::findOrFail($id);
         $limit->update([
             'max_nominees' => $validated['max_nominees'],
-            'updated_by' => auth()->id(),
+            'last_updated_by' => auth()->id(),
         ]);
 
         return response()->json([

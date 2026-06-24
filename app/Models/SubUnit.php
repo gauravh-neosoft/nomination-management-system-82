@@ -10,7 +10,7 @@ class SubUnit extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['unit_id', 'name', 'is_active', 'created_by', 'updated_by'];
+    protected $fillable = ['unit_id', 'name', 'is_active', 'created_by', 'last_updated_by'];
 
     /**
      * Get the parent unit that owns this sub unit.

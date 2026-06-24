@@ -19,7 +19,7 @@ class NominatorEventLimit extends Model
         'nominator_id',
         'max_nominees',
         'created_by',
-        'updated_by',
+        'last_updated_by',
     ];
 
     /**
@@ -51,6 +51,6 @@ class NominatorEventLimit extends Model
      */
     public function updater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'last_updated_by');
     }
 }

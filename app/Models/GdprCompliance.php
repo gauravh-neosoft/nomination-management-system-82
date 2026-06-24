@@ -10,5 +10,5 @@ class GdprCompliance extends Model
     use SoftDeletes;
     protected $table = 'gdpr_compliances';
 
-    protected $fillable = ['name', 'is_active', 'created_by', 'updated_by'];
+    protected $fillable = ['name', 'is_active', 'created_by', 'last_updated_by'];
 }

@@ -35,7 +35,7 @@ return new class extends Migration
                 ->constrained('users')
                 ->onDelete('set null');
             
-            $table->foreignId('updated_by')
+            $table->foreignId('last_updated_by')
                 ->nullable()
                 ->comment('User who updated the limit')
                 ->constrained('users')

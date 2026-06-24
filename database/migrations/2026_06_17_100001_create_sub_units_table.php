@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name', 100)->comment('Sub-unit name');
             $table->boolean('is_active')->default(true)->comment('Active status flag');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('last_updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
 
