@@ -44,14 +44,14 @@
       }
 
       $path = request()->path();
-      if (str_contains($path, 'nominator')) {
-          $menu = 'nominator-menu';
+      if (str_contains($path, 'admin')) {
+          $menu = 'admin-menu';
       } elseif (str_contains($path, 'unit-spoc') || str_contains($path, 'unit_spoc')) {
           $menu = 'unit-spoc-menu';
       } elseif (str_contains($path, 'event-ops') || str_contains($path, 'event_ops')) {
           $menu = 'event-ops-menu';
-      } elseif (str_contains($path, 'admin')) {
-          $menu = 'admin-menu';
+      } elseif (str_contains($path, 'nominator')) {
+          $menu = 'nominator-menu';
       }
       @endphp
       @include('layouts.menus.' . $menu)

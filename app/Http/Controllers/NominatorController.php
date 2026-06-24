@@ -16,17 +16,34 @@ class NominatorController extends Controller
     {
         $userId = Auth::id();
 
-        // 1. Get counts
-        $newEventsCount = Events::where('status', 'ongoing')->count();
+        // 1. Get counts (assigned to this nominator)
+        $newEventsCount = Events::where('status', 'ongoing')
+            ->whereIn('id', function($query) use ($userId) {
+                $query->select('event_id')
+                    ->from('event_assignments')
+                    ->where('user_id', $userId);
+            })
+            ->count();
 
         $nominationsCount = DB::table('nominees_master')
             ->where('nominator_id', $userId)
             ->count();
 
-        $eventHistoryCount = Events::where('status', 'completed')->count();
+        $eventHistoryCount = Events::where('status', 'completed')
+            ->whereIn('id', function($query) use ($userId) {
+                $query->select('event_id')
+                    ->from('event_assignments')
+                    ->where('user_id', $userId);
+            })
+            ->count();
 
-        // 2. Get latest active events for the table
+        // 2. Get latest active events for the table (assigned to this nominator)
         $rawEvents = Events::where('status', 'ongoing')
+            ->whereIn('id', function($query) use ($userId) {
+                $query->select('event_id')
+                    ->from('event_assignments')
+                    ->where('user_id', $userId);
+            })
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
@@ -56,8 +73,13 @@ class NominatorController extends Controller
     {
         $userId = Auth::id();
 
-        // Fetch ongoing events
+        // Fetch ongoing events assigned to this nominator
         $rawEvents = Events::where('status', 'ongoing')
+            ->whereIn('id', function($query) use ($userId) {
+                $query->select('event_id')
+                    ->from('event_assignments')
+                    ->where('user_id', $userId);
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -91,7 +113,13 @@ class NominatorController extends Controller
         });
 
         // Calculate badges
-        $openCount = Events::where('status', 'ongoing')->count();
+        $openCount = Events::where('status', 'ongoing')
+            ->whereIn('id', function($query) use ($userId) {
+                $query->select('event_id')
+                    ->from('event_assignments')
+                    ->where('user_id', $userId);
+            })
+            ->count();
 
         $closingSoonCount = 0;
         foreach ($events as $evt) {
@@ -107,8 +135,13 @@ class NominatorController extends Controller
     {
         $userId = Auth::id();
 
-        // Fetch completed events
+        // Fetch completed events assigned to this nominator
         $rawEvents = Events::where('status', 'completed')
+            ->whereIn('id', function($query) use ($userId) {
+                $query->select('event_id')
+                    ->from('event_assignments')
+                    ->where('user_id', $userId);
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 

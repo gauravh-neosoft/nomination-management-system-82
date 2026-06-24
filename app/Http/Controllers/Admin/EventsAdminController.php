@@ -53,6 +53,7 @@ class EventsAdminController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'location' => 'required|string|max:255',
             'type' => 'required|string|in:Hospitality,Non-Hospitality',
+            'scope' => 'required|string|in:internal,external',
             'nomination_deadline' => 'required|date',
             'nomination_limit' => 'required|integer|min:1',
             'gdpr_compliance' => 'required|string|max:255',
@@ -74,6 +75,7 @@ class EventsAdminController extends Controller
         $event->end_date = $validated['end_date'];
         $event->location = $validated['location'];
         $event->type = $validated['type'] === 'Hospitality' ? 'hospitality' : 'non_hospitality';
+        $event->scope = $validated['scope'];
         $event->nomination_deadline = $validated['nomination_deadline'];
         $event->max_nominees_per_form = $validated['nomination_limit'];
         $event->gdpr_compliance = $validated['gdpr_compliance'];
@@ -108,6 +110,7 @@ class EventsAdminController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'location' => 'required|string|max:255',
             'type' => 'required|string|in:Hospitality,Non-Hospitality',
+            'scope' => 'required|string|in:internal,external',
             'nomination_deadline' => 'required|date',
             'nomination_limit' => 'required|integer|min:1',
             'gdpr_compliance' => 'required|string|max:255',
@@ -128,6 +131,7 @@ class EventsAdminController extends Controller
         $event->end_date = $validated['end_date'];
         $event->location = $validated['location'];
         $event->type = $validated['type'] === 'Hospitality' ? 'hospitality' : 'non_hospitality';
+        $event->scope = $validated['scope'];
         $event->nomination_deadline = $validated['nomination_deadline'];
         $event->max_nominees_per_form = $validated['nomination_limit'];
         $event->gdpr_compliance = $validated['gdpr_compliance'];

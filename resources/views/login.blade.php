@@ -86,9 +86,11 @@
                 <label for="user_email" class="form-label text-dark fw-bold">Email address / ID</label>
                 <select name="user_email" id="user_email" class="form-select form-select-sm rounded-3">
                   <option value="gaurav@nominator.com" selected>gaurav@nominator.com (Nominator)</option>
+                  <option value="sunny@nominator.com" selected>sunny@nominator.com (Nominator)</option>
                   <option value="gaurav@unitspoc.com">gaurav@unitspoc.com (Unit SPOC)</option>
                   <option value="gaurav@eventops.com">gaurav@eventops.com (Event OPS)</option>
                   <option value="gaurav@admin.com">gaurav@admin.com (Admin)</option>
+                  <option value="suraj@superadmin.com">suraj@superadmin.com (Admin)</option>
                 </select>
               </div>
 

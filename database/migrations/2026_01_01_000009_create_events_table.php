@@ -69,6 +69,10 @@ return new class extends Migration
                 ->default('ongoing')
                 ->comment('Lifecycle state parameters');
             
+            $table->enum('scope', ['internal', 'external'])
+                ->default('external')
+                ->comment('Defines if the event is internal or external');
+            
             $table->foreignId('created_by')
                 ->nullable()
                 ->comment('Foreign key referencing users table (who created this event)')

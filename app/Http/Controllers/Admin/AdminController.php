@@ -114,6 +114,42 @@ class AdminController extends Controller
             $event->start_date = Carbon::parse($event->start_date)->format('d-m-Y');
             $event->end_date = Carbon::parse($event->end_date)->format('d-m-Y');
             $event->nomination_deadline = Carbon::parse($event->nomination_deadline)->format('d-m-Y H:i');
+
+            // Fetch actual nominee list and count for the admin to view
+            $event->nominees = \DB::table('nominees_master')
+                ->join('users', 'nominees_master.nominator_id', '=', 'users.id')
+                ->where('nominees_master.event_id', $event->id)
+                ->select('nominees_master.*', 'users.name as nominator_name', 'users.email as nominator_email')
+                ->orderBy('nominees_master.created_at', 'desc')
+                ->get()
+                ->map(function ($nominee) {
+                    $nominee->full_name = trim($nominee->first_name . ' ' . $nominee->last_name);
+                    return $nominee;
+                });
+            
+            $event->nominees_count = $event->nominees->count();
+
+            // Fetch domain limitations
+            $domainLimits = \DB::table('event_domain_limits')
+                ->join('domains', 'event_domain_limits.domain_id', '=', 'domains.id')
+                ->where('event_domain_limits.event_id', $event->id)
+                ->select('domains.name as domain_name', 'event_domain_limits.max_limit')
+                ->get();
+            
+            $event->domain_limitations = $domainLimits->isNotEmpty()
+                ? $domainLimits->map(fn($dl) => "{$dl->domain_name} ({$dl->max_limit})")->implode(', ')
+                : 'None';
+
+            // Fetch assigned nominators
+            $assignedNominators = \DB::table('event_assignments')
+                ->join('users', 'event_assignments.user_id', '=', 'users.id')
+                ->where('event_assignments.event_id', $event->id)
+                ->pluck('users.name');
+            
+            $event->assigned_nominator_names = $assignedNominators->isNotEmpty()
+                ? $assignedNominators->implode(', ')
+                : 'None';
+
             return $event;
         });
 
@@ -356,9 +392,9 @@ class AdminController extends Controller
         $limits = NominatorEventLimit::with(['event', 'nominator', 'creator', 'updater'])
             ->orderBy('created_at', 'desc')
             ->get();
-        
+
         $events = Events::where('status', 'ongoing')->orderBy('name', 'asc')->get();
-        
+
         $nominators = \App\Models\User::whereHas('role', function ($query) {
             $query->where('name', 'nominator');
         })->orderBy('name', 'asc')->get();

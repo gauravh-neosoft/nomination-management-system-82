@@ -16,31 +16,29 @@
     <table class="table table-hover align-middle" id="events-table">
       <thead>
         <tr class="table-light">
+          <th>Event Code</th>
           <th>Event Name</th>
           <th>Event Type</th>
           <th>Start Date</th>
           <th>End Date</th>
-          <th>Nomination Deadline</th>
-          <th>Max Nominees</th>
-          <th>Nomination State</th>
+          <th>Location</th>
+          <th>Account Domain Limitation</th>
+          <th>Nomination Deadline Date</th>
+          <th>Event Status</th>
+          <th>Nomination Requirement</th>
+          <th>Nominator Name</th>
+          <th>Nominations</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         @foreach($events as $event)
         <tr>
+          <td><code class="text-dark">{{ $event->event_code }}</code></td>
           <td class="fw-semibold">
             <span>{{ $event->name }}</span>
-            {{-- <div class="text-secondary small mt-1" style="font-size: 0.8rem;">
-                Code: <code class="text-dark">{{ $event->event_code }}</code> | Location: <span>{{ $event->location }}</span>
-            </div> --}}
             @if($event->type === 'hospitality')
-              {{-- <div class="mt-2 p-2 border rounded bg-white small" style="font-size: 0.8rem; border-left: 3px solid #ff7a00 !important;"> --}}
-                  {{-- <strong>Declaration:</strong> {{ $event->declaration }}<br> --}}
-                  {{-- <strong>Invite For:</strong> {{ $event->invite_for }}<br> --}}
-                  {{-- <strong>Invite Spouser:</strong> {{ $event->invite_spouser }}<br> --}}
-                  {{-- <strong>Govt/State Owned:</strong> {{ $event->govt_company }} --}}
-              {{-- </div> --}}
+              {{-- Hospitality extra meta details block --}}
             @endif
           </td>
           <td>{{ $event->type === 'hospitality' ? 'Hospitality' : 'Non-Hospitality' }}</td>
@@ -50,12 +48,40 @@
           <td>
             {{ $event->end_date  }}</div>
           </td>
+          <td>{{ $event->location }}</td>
+          <td>
+            <span class="text-secondary small">{{ $event->domain_limitations }}</span>
+          </td>
           <td>
             {{ $event->nomination_deadline  }}</div>
           </td>
-          <td>{{ $event->max_nominees_per_form }}</td>
-          <td>            
-              <span class="badge bg-warning text-dark">Awaiting Entries</span>
+          <td>
+            @if($event->status === 'ongoing')
+              <span class="badge bg-success event-status-badge">Ongoing</span>
+            @elseif($event->status === 'completed')
+              <span class="badge bg-secondary event-status-badge">Completed</span>
+            @else
+              <span class="badge bg-danger event-status-badge">Cancelled</span>
+            @endif
+          </td>
+          <td>{{ $event->max_nominees_per_form }} max</td>
+          <td>
+            <span class="text-secondary small">{{ $event->assigned_nominator_names }}</span>
+          </td>
+          <td>
+            <div class="d-flex justify-content-center gap-3 align-items-center">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-people text-primary me-2"></i><span>{{ $event->nominees_count }}</span>
+              </div>
+              <div class="vr text-light-grey"></div>
+              <button
+                class="btn btn-sm btn-outline-primary py-0 px-2"
+                data-bs-toggle="modal"
+                data-bs-target="#nominationListModal-{{ $event->id }}"
+              >
+                View List
+              </button>
+            </div>
           </td>
           <td>
             <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="openEditEventModal({
@@ -66,6 +92,7 @@
                 end_date: '{{ $event->raw_end_date }}',
                 location: '{{ addslashes($event->location) }}',
                 type: '{{ $event->type === 'hospitality' ? 'Hospitality' : 'Non-Hospitality' }}',
+                scope: '{{ $event->scope }}',
                 nomination_deadline: '{{ $event->raw_nomination_deadline }}',
                 nomination_limit: {{ $event->max_nominees_per_form }},
                 gdpr_compliance: '{{ addslashes($event->gdpr_compliance) }}',
@@ -74,7 +101,6 @@
                 invite_spouser: '{{ addslashes($event->invite_spouser) }}',
                 govt_company: '{{ addslashes($event->govt_company) }}'
             })">Edit</button>
-            <button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="softDeleteEvent(this, {{ $event->id }})">Delete</button>
           </td>
         </tr>
         @endforeach
@@ -120,12 +146,20 @@
               <label class="form-label fw-bold small">Event Location</label>
               <input type="text" name="location" id="edit-form-event-location" class="form-control form-control-sm" required placeholder="e.g. San Francisco, CA" />
             </div>
-            <!-- Event Type -->
+             <!-- Event Type -->
             <div class="col-md-6">
               <label class="form-label fw-bold small">Event Type</label>
               <select name="type" id="edit-form-event-type" class="form-select form-select-sm" required onchange="toggleEditHospitalityFields()">
                 <option value="Hospitality">Hospitality</option>
                 <option value="Non-Hospitality">Non-Hospitality</option>
+              </select>
+            </div>
+            <!-- Event Scope -->
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Event Scope</label>
+              <select name="scope" id="edit-form-event-scope" class="form-select form-select-sm" required>
+                <option value="internal">Internal</option>
+                <option value="external">External</option>
               </select>
             </div>
             <!-- Event Nomination Deadline -->
@@ -186,6 +220,99 @@
     </div>
   </div>
 </div>
+
+@foreach($events as $event)
+<!-- Nomination list modal for {{ $event->name }} -->
+<div class="modal fade" id="nominationListModal-{{ $event->id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content rounded-4 border-0 shadow-lg">
+      <div class="modal-header border-0 bg-light py-3 justify-content-between">
+        <h5 class="modal-title fw-bold">Nominations List - {{ $event->name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <div class="table-responsive border rounded-3 bg-white">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr class="table-light">
+                <th class="ps-3">S.No.</th>
+                <th>Nominator</th>
+                <th>Nominee Name</th>
+                <th>Email</th>
+                <th>Invite Status</th>
+                <th>Approval Status</th>
+                <th>GDPR Option</th>
+                <th>Unit / Sub-Unit</th>
+                <th>Company</th>
+                <th>Job Title / Level</th>
+                <th>AM Details</th>
+                <th>Business/IT</th>
+                <th>Country</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($event->nominees as $nominee)
+              <tr>
+                <td class="ps-3">{{ $loop->iteration }}</td>
+                <td>
+                  <div class="fw-semibold">{{ $nominee->nominator_name }}</div>
+                  <div class="text-secondary small">{{ $nominee->nominator_email }}</div>
+                </td>
+                <td class="fw-semibold">{{ $nominee->full_name }}</td>
+                <td>{{ $nominee->email }}</td>
+                <td>
+                  @if($nominee->invite_status)
+                    <span class="badge bg-secondary">{{ $nominee->invite_status }}</span>
+                  @else
+                    <span class="text-muted small">-</span>
+                  @endif
+                </td>
+                <td>
+                  @if($nominee->approval_status === 'approved')
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">Approved</span>
+                  @elseif($nominee->approval_status === 'pending')
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2 py-1">Pending</span>
+                  @else
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-1">Rejected</span>
+                  @endif
+                </td>
+                <td>
+                  <span class="text-secondary small">{{ $nominee->gdpr_compliance }}</span>
+                </td>
+                <td>
+                  <div>{{ $nominee->unit }}</div>
+                  @if($nominee->sub_unit)
+                    <div class="text-secondary small">{{ $nominee->sub_unit }}</div>
+                  @endif
+                </td>
+                <td>{{ $nominee->company }}</td>
+                <td>
+                  <div>{{ $nominee->title }}</div>
+                  <div class="text-secondary small">Level {{ $nominee->job_level }}</div>
+                </td>
+                <td>
+                  <div class="small">AM: {{ $nominee->primary_account_manager_name }}</div>
+                  <div class="text-secondary small">{{ $nominee->primary_account_manager_email }}</div>
+                </td>
+                <td>{{ $nominee->business_or_it }}</td>
+                <td>{{ $nominee->country }}</td>
+              </tr>
+              @empty
+              <tr>
+                <td colspan="13" class="text-center text-secondary py-4">No nominations submitted yet for this event.</td>
+              </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer border-0 bg-light py-2">
+        <button type="button" class="btn btn-sm btn-secondary rounded-3" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
 @endsection
 
 @push('scripts')
@@ -206,6 +333,7 @@ function openEditEventModal(eventData) {
     document.getElementById('edit-form-event-end-date').value = eventData.end_date;
     document.getElementById('edit-form-event-location').value = eventData.location;
     document.getElementById('edit-form-event-type').value = eventData.type;
+    document.getElementById('edit-form-event-scope').value = eventData.scope;
     document.getElementById('edit-form-event-deadline').value = eventData.nomination_deadline;
     document.getElementById('edit-form-event-limit').value = eventData.nomination_limit;
     document.getElementById('edit-form-event-gdpr').value = eventData.gdpr_compliance;
@@ -255,9 +383,9 @@ function softDeleteEvent(btn, eventId) {
                 const editBtn = btn.previousElementSibling;
                 if (editBtn) editBtn.disabled = true;
                 
-                const statusBadge = row.cells[6].querySelector('.badge');
+                const statusBadge = row.querySelector('.event-status-badge');
                 if (statusBadge) {
-                    statusBadge.className = 'badge bg-secondary';
+                    statusBadge.className = 'badge bg-secondary event-status-badge';
                     statusBadge.textContent = 'Archived (Soft Deleted)';
                 }
                 showToast("Record archived/soft-deleted successfully.", "bg-secondary");

@@ -86,6 +86,17 @@
               <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
+        <!-- Event Scope -->
+        <div class="col-md-6">
+          <label class="form-label fw-bold small" for="form-event-scope">Event Scope</label>
+          <select name="scope" class="form-select form-select-sm @error('scope') is-invalid @enderror" required id="form-event-scope">
+            <option value="internal" {{ old('scope') === 'internal' ? 'selected' : '' }}>Internal</option>
+            <option value="external" {{ old('scope', 'external') === 'external' ? 'selected' : '' }}>External</option>
+          </select>
+          @error('scope')
+              <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
         <!-- Event Nomination Deadline -->
         <div class="col-md-6">
           <label class="form-label fw-bold small" for="form-event-deadline">Event Nomination Deadline</label>

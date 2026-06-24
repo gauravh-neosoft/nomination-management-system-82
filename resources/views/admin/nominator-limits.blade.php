@@ -82,6 +82,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body py-4">
+        <!-- General Error Alert -->
+        <div id="add-limit-error-alert" class="alert alert-danger d-none py-2 px-3 small rounded-3 mb-3"></div>
         <form id="add-limit-form">
           <div class="mb-3">
             <label class="form-label fw-bold">Active Event</label>
@@ -91,7 +93,7 @@
                 <option value="{{ $event->id }}">{{ $event->name }} ({{ $event->event_code }})</option>
               @endforeach
             </select>
-            <div class="invalid-feedback" id="add-limit-error-event_id"></div>
+            <div class="invalid-feedback" id="add-limit-form-error-event_id"></div>
           </div>
           <div class="mb-3">
             <label class="form-label fw-bold">Nominator</label>
@@ -101,12 +103,12 @@
                 <option value="{{ $nom->id }}">{{ $nom->name }} {{ $nom->last_name }} ({{ $nom->email }})</option>
               @endforeach
             </select>
-            <div class="invalid-feedback" id="add-limit-error-nominator_id"></div>
+            <div class="invalid-feedback" id="add-limit-form-error-nominator_id"></div>
           </div>
           <div class="mb-3">
             <label class="form-label fw-bold">Max Nominees Allowed</label>
             <input type="number" name="max_nominees" class="form-control rounded-3" required min="0" placeholder="e.g. 5">
-            <div class="invalid-feedback" id="add-limit-error-max_nominees"></div>
+            <div class="invalid-feedback" id="add-limit-form-error-max_nominees"></div>
           </div>
           <div class="text-end">
             <button type="button" class="btn btn-sm btn-outline-secondary rounded-3 me-2" data-bs-dismiss="modal">Cancel</button>
@@ -127,6 +129,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body py-4">
+        <!-- General Error Alert -->
+        <div id="edit-limit-error-alert" class="alert alert-danger d-none py-2 px-3 small rounded-3 mb-3"></div>
         <form id="edit-limit-form">
           <input type="hidden" name="id" id="edit-limit-id">
           <div class="mb-3">
@@ -140,7 +144,7 @@
           <div class="mb-3">
             <label class="form-label fw-bold">Max Nominees Allowed</label>
             <input type="number" name="max_nominees" id="edit-limit-max-nominees" class="form-control rounded-3" required min="0">
-            <div class="invalid-feedback" id="edit-limit-error-max_nominees"></div>
+            <div class="invalid-feedback" id="edit-limit-form-error-max_nominees"></div>
           </div>
           <div class="text-end">
             <button type="button" class="btn btn-sm btn-outline-secondary rounded-3 me-2" data-bs-dismiss="modal">Cancel</button>
@@ -233,10 +237,38 @@ document.getElementById('add-limit-form').addEventListener('submit', function(e)
                 window.location.reload();
             }, 1000);
         } else {
-            handleValidationErrors('add-limit-form', data.errors || { max_nominees: [data.message] });
+            if (data.errors) {
+                handleValidationErrors('add-limit-form', data.errors);
+            } else if (data.message) {
+                // Show error message above the form
+                const alertEl = document.getElementById('add-limit-error-alert');
+                if (alertEl) {
+                    alertEl.textContent = data.message;
+                    alertEl.classList.remove('d-none');
+                }
+
+                // Also highlight fields causing the duplicate error
+                const form = document.getElementById('add-limit-form');
+                const eventSelect = form.querySelector('[name="event_id"]');
+                const nominatorSelect = form.querySelector('[name="nominator_id"]');
+                if (eventSelect) eventSelect.classList.add('is-invalid');
+                if (nominatorSelect) nominatorSelect.classList.add('is-invalid');
+            } else {
+                const alertEl = document.getElementById('add-limit-error-alert');
+                if (alertEl) {
+                    alertEl.textContent = "Failed to save custom limit.";
+                    alertEl.classList.remove('d-none');
+                }
+            }
         }
     })
-    .catch(() => showToast("Failed to save custom limit.", 'bg-danger'));
+    .catch(() => {
+        const alertEl = document.getElementById('add-limit-error-alert');
+        if (alertEl) {
+            alertEl.textContent = "Failed to save custom limit.";
+            alertEl.classList.remove('d-none');
+        }
+    });
 });
 
 function openEditLimitModal(id, eventName, nominatorName, maxNominees) {
@@ -268,10 +300,30 @@ document.getElementById('edit-limit-form').addEventListener('submit', function(e
                 window.location.reload();
             }, 1000);
         } else {
-            handleValidationErrors('edit-limit-form', data.errors);
+            if (data.errors) {
+                handleValidationErrors('edit-limit-form', data.errors);
+            } else if (data.message) {
+                const alertEl = document.getElementById('edit-limit-error-alert');
+                if (alertEl) {
+                    alertEl.textContent = data.message;
+                    alertEl.classList.remove('d-none');
+                }
+            } else {
+                const alertEl = document.getElementById('edit-limit-error-alert');
+                if (alertEl) {
+                    alertEl.textContent = "Failed to update custom limit.";
+                    alertEl.classList.remove('d-none');
+                }
+            }
         }
     })
-    .catch(() => showToast("Failed to update custom limit.", 'bg-danger'));
+    .catch(() => {
+        const alertEl = document.getElementById('edit-limit-error-alert');
+        if (alertEl) {
+            alertEl.textContent = "Failed to update custom limit.";
+            alertEl.classList.remove('d-none');
+        }
+    });
 });
 
 let limitIdToDelete = null;
@@ -319,6 +371,14 @@ function clearValidationErrors(formId) {
     const form = document.getElementById(formId);
     form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
     form.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+    
+    // Hide the general error alert container for the corresponding form
+    const alertId = formId === 'add-limit-form' ? 'add-limit-error-alert' : 'edit-limit-error-alert';
+    const alertEl = document.getElementById(alertId);
+    if (alertEl) {
+        alertEl.classList.add('d-none');
+        alertEl.textContent = '';
+    }
 }
 </script>
 @endpush
