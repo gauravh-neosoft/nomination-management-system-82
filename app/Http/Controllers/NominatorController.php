@@ -294,12 +294,22 @@ class NominatorController extends Controller
             }
         });
 
-        // 5. Send notification to admins
+        // 5. Send notification to admins and unit ops/spocs assigned to this event
         try {
             $nominator = Auth::user();
             $adminEmails = \App\Helpers\MailHelper::getAdminEmails();
-            if (!empty($adminEmails)) {
-                send_templated_email($adminEmails, 'nomination_added', [
+            $unitSpocEmails = DB::table('event_assignments')
+                ->join('users', 'event_assignments.user_id', '=', 'users.id')
+                ->join('roles', 'users.role_id', '=', 'roles.id')
+                ->where('event_assignments.event_id', $event->id)
+                ->where('roles.name', 'unit_spoc')
+                ->where('users.status', 1)
+                ->pluck('users.email')
+                ->toArray();
+            $recipientEmails = array_unique(array_merge($adminEmails, $unitSpocEmails));
+
+            if (!empty($recipientEmails)) {
+                send_templated_email($recipientEmails, 'nomination_added', [
                     'subject' => 'New Nomination: ' . $validated['first_name'] . ' ' . $validated['last_name'] . ' - ' . $event->name,
                     'event_name' => $event->name,
                     'event_code' => $event->event_code,
@@ -622,8 +632,18 @@ class NominatorController extends Controller
             try {
                 $nominator = Auth::user();
                 $adminEmails = \App\Helpers\MailHelper::getAdminEmails();
-                if (!empty($adminEmails)) {
-                    send_templated_email($adminEmails, 'bulk_nomination_added', [
+                $unitSpocEmails = DB::table('event_assignments')
+                    ->join('users', 'event_assignments.user_id', '=', 'users.id')
+                    ->join('roles', 'users.role_id', '=', 'roles.id')
+                    ->where('event_assignments.event_id', $event->id)
+                    ->where('roles.name', 'unit_spoc')
+                    ->where('users.status', 1)
+                    ->pluck('users.email')
+                    ->toArray();
+                $recipientEmails = array_unique(array_merge($adminEmails, $unitSpocEmails));
+
+                if (!empty($recipientEmails)) {
+                    send_templated_email($recipientEmails, 'bulk_nomination_added', [
                         'subject' => 'Bulk Nominations Uploaded (' . $successCount . ') - ' . $event->name,
                         'event_name' => $event->name,
                         'event_code' => $event->event_code,

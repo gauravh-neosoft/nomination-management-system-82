@@ -17,20 +17,33 @@ class UnitSpocController extends Controller
     public function dashboard()
     {
         try {
-            // 1. Fetch counts
-            $totalNominations = DB::table('nominees_master')->count();
-            $totalPending = DB::table('nominees_master')->where('approval_status', 'pending')->count();
+            // Fetch assigned event IDs for the logged-in Unit SPOC
+            $assignedEventIds = DB::table('event_assignments')
+                ->where('user_id', Auth::id())
+                ->pluck('event_id')
+                ->toArray();
+
+            // 1. Fetch counts scoped to assigned events
+            $totalNominations = DB::table('nominees_master')
+                ->whereIn('event_id', $assignedEventIds)
+                ->count();
+                
+            $totalPending = DB::table('nominees_master')
+                ->whereIn('event_id', $assignedEventIds)
+                ->where('approval_status', 'pending')
+                ->count();
             
-            // Reviewed today: approved or rejected today
+            // Reviewed today: approved or rejected today (scoped to assigned events)
             $reviewedToday = DB::table('nominees_master')
+                ->whereIn('event_id', $assignedEventIds)
                 ->whereIn('approval_status', ['approved', 'rejected'])
                 ->whereDate('updated_at', Carbon::today())
                 ->count();
 
-            // Recent activities
+            // Recent activities (scoped to assigned events, including pending status)
             $recentActivities = DB::table('nominees_master')
                 ->join('events', 'nominees_master.event_id', '=', 'events.id')
-                ->whereIn('nominees_master.approval_status', ['approved', 'rejected'])
+                ->whereIn('nominees_master.event_id', $assignedEventIds)
                 ->select('nominees_master.*', 'events.name as event_name')
                 ->orderBy('nominees_master.updated_at', 'desc')
                 ->limit(3)
@@ -40,8 +53,9 @@ class UnitSpocController extends Controller
                     return $activity;
                 });
 
-            // 2. Fetch current/ongoing events
+            // 2. Fetch current/ongoing events (scoped to assigned events)
             $currentEvents = Events::where('status', 'ongoing')
+                ->whereIn('id', $assignedEventIds)
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($event) {
@@ -71,6 +85,7 @@ class UnitSpocController extends Controller
             $pendingNominationsEvents = DB::table('nominees_master')
                 ->join('events', 'nominees_master.event_id', '=', 'events.id')
                 ->join('users', 'nominees_master.nominator_id', '=', 'users.id')
+                ->whereIn('nominees_master.event_id', $assignedEventIds)
                 ->where('nominees_master.approval_status', 'pending')
                 ->select(
                     'events.id as event_id',
@@ -142,8 +157,15 @@ class UnitSpocController extends Controller
     public function activeEvents()
     {
         try {
+            // Fetch assigned event IDs for the logged-in Unit SPOC
+            $assignedEventIds = DB::table('event_assignments')
+                ->where('user_id', Auth::id())
+                ->pluck('event_id')
+                ->toArray();
+
             // We use the same data retrieval logic as the dashboard for consistency
             $currentEvents = Events::where('status', 'ongoing')
+                ->whereIn('id', $assignedEventIds)
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($event) {
@@ -170,6 +192,7 @@ class UnitSpocController extends Controller
             $pendingNominationsEvents = DB::table('nominees_master')
                 ->join('events', 'nominees_master.event_id', '=', 'events.id')
                 ->join('users', 'nominees_master.nominator_id', '=', 'users.id')
+                ->whereIn('nominees_master.event_id', $assignedEventIds)
                 ->where('nominees_master.approval_status', 'pending')
                 ->select(
                     'events.id as event_id',
@@ -250,7 +273,13 @@ class UnitSpocController extends Controller
     public function completedEvents()
     {
         try {
+            $assignedEventIds = DB::table('event_assignments')
+                ->where('user_id', Auth::id())
+                ->pluck('event_id')
+                ->toArray();
+
             $completedEvents = Events::where('status', 'completed')
+                ->whereIn('id', $assignedEventIds)
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($event) {
@@ -286,6 +315,11 @@ class UnitSpocController extends Controller
         try {
             $userId = Auth::id();
 
+            $assignedEventIds = DB::table('event_assignments')
+                ->where('user_id', Auth::id())
+                ->pluck('event_id')
+                ->toArray();
+
             // Fetch units/subunits/gdpr for edit modal dropdown lists
             $units = DB::table('units')->where('is_active', true)->pluck('name');
             $subUnits = DB::table('sub_units')->where('is_active', true)->pluck('name');
@@ -296,6 +330,7 @@ class UnitSpocController extends Controller
                 ->join('events', 'nominees_master.event_id', '=', 'events.id')
                 ->join('users', 'nominees_master.nominator_id', '=', 'users.id')
                 ->where('nominees_master.nominator_id', '!=', $userId)
+                ->whereIn('nominees_master.event_id', $assignedEventIds)
                 ->select(
                     'nominees_master.*',
                     'events.name as event_name',
@@ -307,6 +342,7 @@ class UnitSpocController extends Controller
                 ->join('events', 'nominees_master.event_id', '=', 'events.id')
                 ->join('users', 'nominees_master.nominator_id', '=', 'users.id')
                 ->where('nominees_master.nominator_id', '=', $userId)
+                ->whereIn('nominees_master.event_id', $assignedEventIds)
                 ->select(
                     'nominees_master.*',
                     'events.name as event_name',

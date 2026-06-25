@@ -91,6 +91,8 @@
                       <i class="bi bi-check-lg text-success"></i>
                     @elseif($activity->approval_status === 'rejected')
                       <i class="bi bi-x-lg text-danger"></i>
+                    @elseif($activity->approval_status === 'pending')
+                      <i class="bi bi-clock-history text-warning"></i>
                     @else
                       <i class="bi bi-pencil text-warning"></i>
                     @endif
@@ -98,7 +100,11 @@
 
                   <p class="fw-bold mb-0 text-sm">Nomination {{ ucfirst($activity->approval_status) }}</p>
                   <p class="text-secondary mb-1 fs-08">
-                    {{ $activity->first_name }} {{ $activity->last_name }}'s nomination for '{{ $activity->event_name }}' was {{ $activity->approval_status }}.
+                    @if($activity->approval_status === 'pending')
+                      {{ $activity->first_name }} {{ $activity->last_name }}'s nomination for '{{ $activity->event_name }}' was submitted.
+                    @else
+                      {{ $activity->first_name }} {{ $activity->last_name }}'s nomination for '{{ $activity->event_name }}' was {{ $activity->approval_status }}.
+                    @endif
                   </p>
                   <small class="text-light-grey fw-bold text-uppercase fs-07">
                     {{ $activity->time_diff }}
