@@ -6,12 +6,12 @@
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
   <p class="text-secondary mb-0">Events currently open for nomination submission</p>
   <div>
-    <span class="badge fw-normal rounded-pill bg-light-green text-success px-3 py-2 me-2">
+    <p class="badge fw-normal rounded-pill bg-light-green text-success px-3 py-2 me-2">
       {{ $openCount }} Open
-    </span>
-    <span class="badge fw-normal rounded-pill px-3 py-2" style="background-color: #fff9e6; color: #d9a300;">
+    </p>
+    <p class="badge fw-normal rounded-pill px-3 py-2" style="background-color: #fff9e6; color: #d9a300;">
       {{ $closingSoonCount }} Closing soon
-    </span>
+    </p>
   </div>
 </div>
 

@@ -9,12 +9,12 @@
   </p>
 
   <div>
-    <span class="badge fw-normal rounded-pill bg-light-green text-success px-3 py-2 me-3 fs-09">
+    <p class="badge fw-normal rounded-pill bg-light-green text-success px-3 py-2 me-3 fs-09">
       {{ $openCount }} Open
-    </span>
-    <span class="badge fw-normal rounded-pill bg-light-yellow text-warning px-3 py-2 fs-09">
+    </p>
+    <p class="badge fw-normal rounded-pill bg-light-yellow text-warning px-3 py-2 fs-09">
       {{ $closingSoonCount }} Closing soon
-    </span>
+    </p>
   </div>
 </div>
 
