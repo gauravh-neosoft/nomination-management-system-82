@@ -27,12 +27,12 @@ class UnitSpocController extends Controller
             $totalNominations = DB::table('nominees_master')
                 ->whereIn('event_id', $assignedEventIds)
                 ->count();
-                
+
             $totalPending = DB::table('nominees_master')
                 ->whereIn('event_id', $assignedEventIds)
                 ->where('approval_status', 'pending')
                 ->count();
-            
+
             // Reviewed today: approved or rejected today (scoped to assigned events)
             $reviewedToday = DB::table('nominees_master')
                 ->whereIn('event_id', $assignedEventIds)
@@ -46,7 +46,7 @@ class UnitSpocController extends Controller
                 ->whereIn('nominees_master.event_id', $assignedEventIds)
                 ->select('nominees_master.*', 'events.name as event_name')
                 ->orderBy('nominees_master.updated_at', 'desc')
-                ->limit(3)
+                ->limit(5)
                 ->get()
                 ->map(function ($activity) {
                     $activity->time_diff = Carbon::parse($activity->updated_at)->diffForHumans();
@@ -72,12 +72,12 @@ class UnitSpocController extends Controller
                         ->count();
                     $event->formatted_start_date = Carbon::parse($event->start_date)->format('M j, Y');
                     $event->formatted_end_date = Carbon::parse($event->end_date)->format('M j, Y');
-                    
+
                     // closing soon determination (e.g. within 15 days of start date)
                     $startDate = Carbon::parse($event->start_date);
                     $diffInDays = Carbon::now()->diffInDays($startDate, false);
                     $event->is_closing_soon = $diffInDays >= 0 && $diffInDays <= 15;
-                    
+
                     return $event;
                 });
 
@@ -118,11 +118,11 @@ class UnitSpocController extends Controller
                 ->map(function ($event) {
                     $event->formatted_start_date = Carbon::parse($event->start_date)->format('M j, Y');
                     $event->formatted_end_date = Carbon::parse($event->end_date)->format('M j, Y');
-                    
+
                     $startDate = Carbon::parse($event->start_date);
                     $diffInDays = Carbon::now()->diffInDays($startDate, false);
                     $event->is_closing_soon = $diffInDays >= 0 && $diffInDays <= 15;
-                    
+
                     // Fetch nominee list for this event and nominator
                     $event->nominees = DB::table('nominees_master')
                         ->where('event_id', $event->event_id)
@@ -133,7 +133,7 @@ class UnitSpocController extends Controller
                             $nominee->full_name = trim($nominee->first_name . ' ' . $nominee->last_name);
                             return $nominee;
                         });
-                    
+
                     return $event;
                 });
 
@@ -181,11 +181,11 @@ class UnitSpocController extends Controller
                         ->count();
                     $event->formatted_start_date = Carbon::parse($event->start_date)->format('M j, Y');
                     $event->formatted_end_date = Carbon::parse($event->end_date)->format('M j, Y');
-                    
+
                     $startDate = Carbon::parse($event->start_date);
                     $diffInDays = Carbon::now()->diffInDays($startDate, false);
                     $event->is_closing_soon = $diffInDays >= 0 && $diffInDays <= 15;
-                    
+
                     return $event;
                 });
 
@@ -225,11 +225,11 @@ class UnitSpocController extends Controller
                 ->map(function ($event) {
                     $event->formatted_start_date = Carbon::parse($event->start_date)->format('M j, Y');
                     $event->formatted_end_date = Carbon::parse($event->end_date)->format('M j, Y');
-                    
+
                     $startDate = Carbon::parse($event->start_date);
                     $diffInDays = Carbon::now()->diffInDays($startDate, false);
                     $event->is_closing_soon = $diffInDays >= 0 && $diffInDays <= 15;
-                    
+
                     // Fetch nominee list for this event and nominator
                     $event->nominees = DB::table('nominees_master')
                         ->where('event_id', $event->event_id)
@@ -240,7 +240,7 @@ class UnitSpocController extends Controller
                             $nominee->full_name = trim($nominee->first_name . ' ' . $nominee->last_name);
                             return $nominee;
                         });
-                    
+
                     return $event;
                 });
 
