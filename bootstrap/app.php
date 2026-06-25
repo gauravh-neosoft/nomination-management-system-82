@@ -17,7 +17,22 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, \Illuminate\Http\Request $request) {
             if ($e->getStatusCode() === 419) {
-                return redirect()->route('login')->withErrors(['session' => 'Session expired. Please login again.']);
+                return redirect()->route('login')->withErrors(['session' => 'session expired. pease login agein.']);
             }
+        });
+
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $e, \Illuminate\Http\Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Method not allowed.'
+                ], 405);
+            }
+
+            if (\Illuminate\Support\Facades\Auth::check()) {
+                return redirect()->route('dashboard')->withErrors(['error' => 'The requested action is not supported.']);
+            }
+
+            return redirect()->route('login')->withErrors(['error' => 'The requested action is not supported or your session has expired.']);
         });
     })->create();
