@@ -142,6 +142,7 @@
                 <tr class="table-light">
                   <th scope="col" style="min-width: 60px" class="text-center fs-08 fw-semibold text-uppercase">Serial No.</th>
                   <th scope="col" style="min-width: 140px" class="text-center fs-08 fw-semibold text-uppercase">Invite Status</th>
+                  <th scope="col" style="min-width: 140px" class="text-center fs-08 fw-semibold text-uppercase">Approval Status</th>
                   <th scope="col" style="min-width: 130px" class="text-center fs-08 fw-semibold text-uppercase">Action</th>
                   <th scope="col" style="min-width: 150px" class="fs-08 fw-semibold text-uppercase">Nominator</th>
                   <th scope="col" style="min-width: 180px" class="fs-08 fw-semibold text-uppercase">GDPR Compliant</th>
@@ -157,7 +158,6 @@
                   <th scope="col" style="min-width: 180px" class="fs-08 fw-semibold text-uppercase">AM Email 1</th>
                   <th scope="col" style="min-width: 180px" class="fs-08 fw-semibold text-uppercase">AM Email 2</th>
                   <th scope="col" style="min-width: 120px" class="fs-08 fw-semibold text-uppercase">Business/IT</th>
-                  <th scope="col" style="min-width: 140px" class="text-center fs-08 fw-semibold text-uppercase">Approval Status</th>
                 </tr>
               </thead>
               <tbody class="nominee-rows-body">
@@ -178,6 +178,29 @@
                         <span class="badge rounded-pill bg-light-danger text-danger px-2 py-1 fw-normal">Declined</span>
                       @else
                         <span class="badge rounded-pill bg-light-secondary text-secondary px-2 py-1 fw-normal">{{ $nominee->invite_status ?? 'Invite Pending' }}</span>
+                      @endif
+                    </td>
+                    <td class="text-center approval-cell">
+                      @if($nominee->approval_status === 'pending')
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                          <button class="btn btn-approve-action p-1" title="Approve">
+                            <i class="bi bi-check-circle text-green fs-5"></i>
+                          </button>
+                          <div class="vr text-light-grey" style="height: 16px;"></div>
+                          <button class="btn btn-reject-action p-1" title="Reject">
+                            <i class="bi bi-x-circle text-danger fs-5"></i>
+                          </button>
+                        </div>
+                      @elseif($nominee->approval_status === 'approved')
+                        <div class="w-fit mx-auto badge rounded-pill bg-light-green text-success px-2 py-1 fw-normal d-flex align-items-center gap-1">
+                          <span class="rounded-circle bg-success d-inline-block" style="width: 6px; height: 6px"></span>
+                          Approved
+                        </div>
+                      @else
+                        <div class="w-fit mx-auto badge rounded-pill bg-light-danger text-danger px-2 py-1 fw-normal d-flex align-items-center gap-1">
+                          <span class="rounded-circle bg-danger d-inline-block" style="width: 6px; height: 6px"></span>
+                          Rejected
+                        </div>
                       @endif
                     </td>
                     <td class="text-center">
@@ -211,29 +234,6 @@
                     <td>{{ $nominee->account_manager_email_1 ?? 'N/A' }}</td>
                     <td>{{ $nominee->account_manager_email_2 ?? 'N/A' }}</td>
                     <td>{{ $nominee->business_or_it }}</td>
-                    <td class="text-center approval-cell">
-                      @if($nominee->approval_status === 'pending')
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                          <button class="btn btn-approve-action p-1" title="Approve">
-                            <i class="bi bi-check-circle text-green fs-5"></i>
-                          </button>
-                          <div class="vr text-light-grey" style="height: 16px;"></div>
-                          <button class="btn btn-reject-action p-1" title="Reject">
-                            <i class="bi bi-x-circle text-danger fs-5"></i>
-                          </button>
-                        </div>
-                      @elseif($nominee->approval_status === 'approved')
-                        <div class="w-fit mx-auto badge rounded-pill bg-light-green text-success px-2 py-1 fw-normal d-flex align-items-center gap-1">
-                          <span class="rounded-circle bg-success d-inline-block" style="width: 6px; height: 6px"></span>
-                          Approved
-                        </div>
-                      @else
-                        <div class="w-fit mx-auto badge rounded-pill bg-light-danger text-danger px-2 py-1 fw-normal d-flex align-items-center gap-1">
-                          <span class="rounded-circle bg-danger d-inline-block" style="width: 6px; height: 6px"></span>
-                          Rejected
-                        </div>
-                      @endif
-                    </td>
                   </tr>
                 @empty
                   <tr class="no-records-row">
@@ -258,6 +258,7 @@
                 <tr class="table-light">
                   <th scope="col" style="min-width: 60px" class="text-center fs-08 fw-semibold text-uppercase">Serial No.</th>
                   <th scope="col" style="min-width: 140px" class="text-center fs-08 fw-semibold text-uppercase">Invite Status</th>
+                  <th scope="col" style="min-width: 140px" class="text-center fs-08 fw-semibold text-uppercase">Approval Status</th>
                   <th scope="col" style="min-width: 130px" class="text-center fs-08 fw-semibold text-uppercase">Action</th>
                   <th scope="col" style="min-width: 180px" class="fs-08 fw-semibold text-uppercase">GDPR Compliant</th>
                   <th scope="col" style="min-width: 200px" class="fs-08 fw-semibold text-uppercase">Event Name</th>
@@ -272,7 +273,6 @@
                   <th scope="col" style="min-width: 180px" class="fs-08 fw-semibold text-uppercase">AM Email 1</th>
                   <th scope="col" style="min-width: 180px" class="fs-08 fw-semibold text-uppercase">AM Email 2</th>
                   <th scope="col" style="min-width: 120px" class="fs-08 fw-semibold text-uppercase">Business/IT</th>
-                  <th scope="col" style="min-width: 140px" class="text-center fs-08 fw-semibold text-uppercase">Approval Status</th>
                 </tr>
               </thead>
               <tbody class="nominee-rows-body">
@@ -293,6 +293,29 @@
                         <span class="badge rounded-pill bg-light-danger text-danger px-2 py-1 fw-normal">Declined</span>
                       @else
                         <span class="badge rounded-pill bg-light-secondary text-secondary px-2 py-1 fw-normal">{{ $nominee->invite_status ?? 'Invite Pending' }}</span>
+                      @endif
+                    </td>
+                    <td class="text-center approval-cell">
+                      @if($nominee->approval_status === 'pending')
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                          <button class="btn btn-approve-action p-1" title="Approve">
+                            <i class="bi bi-check-circle text-green fs-5"></i>
+                          </button>
+                          <div class="vr text-light-grey" style="height: 16px;"></div>
+                          <button class="btn btn-reject-action p-1" title="Reject">
+                            <i class="bi bi-x-circle text-danger fs-5"></i>
+                          </button>
+                        </div>
+                      @elseif($nominee->approval_status === 'approved')
+                        <div class="w-fit mx-auto badge rounded-pill bg-light-green text-success px-2 py-1 fw-normal d-flex align-items-center gap-1">
+                          <span class="rounded-circle bg-success d-inline-block" style="width: 6px; height: 6px"></span>
+                          Approved
+                        </div>
+                      @else
+                        <div class="w-fit mx-auto badge rounded-pill bg-light-danger text-danger px-2 py-1 fw-normal d-flex align-items-center gap-1">
+                          <span class="rounded-circle bg-danger d-inline-block" style="width: 6px; height: 6px"></span>
+                          Rejected
+                        </div>
                       @endif
                     </td>
                     <td class="text-center">
@@ -325,29 +348,6 @@
                     <td>{{ $nominee->account_manager_email_1 ?? 'N/A' }}</td>
                     <td>{{ $nominee->account_manager_email_2 ?? 'N/A' }}</td>
                     <td>{{ $nominee->business_or_it }}</td>
-                    <td class="text-center approval-cell">
-                      @if($nominee->approval_status === 'pending')
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                          <button class="btn btn-approve-action p-1" title="Approve">
-                            <i class="bi bi-check-circle text-green fs-5"></i>
-                          </button>
-                          <div class="vr text-light-grey" style="height: 16px;"></div>
-                          <button class="btn btn-reject-action p-1" title="Reject">
-                            <i class="bi bi-x-circle text-danger fs-5"></i>
-                          </button>
-                        </div>
-                      @elseif($nominee->approval_status === 'approved')
-                        <div class="w-fit mx-auto badge rounded-pill bg-light-green text-success px-2 py-1 fw-normal d-flex align-items-center gap-1">
-                          <span class="rounded-circle bg-success d-inline-block" style="width: 6px; height: 6px"></span>
-                          Approved
-                        </div>
-                      @else
-                        <div class="w-fit mx-auto badge rounded-pill bg-light-danger text-danger px-2 py-1 fw-normal d-flex align-items-center gap-1">
-                          <span class="rounded-circle bg-danger d-inline-block" style="width: 6px; height: 6px"></span>
-                          Rejected
-                        </div>
-                      @endif
-                    </td>
                   </tr>
                 @empty
                   <tr class="no-records-row">

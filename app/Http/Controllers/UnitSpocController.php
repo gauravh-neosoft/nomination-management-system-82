@@ -81,6 +81,7 @@ class UnitSpocController extends Controller
                     'events.start_date',
                     'events.end_date',
                     'events.nomination_deadline',
+                    'users.id as nominator_id',
                     'users.name as nominator_name',
                     'users.last_name as nominator_last_name',
                     DB::raw('count(nominees_master.id) as pending_count')
@@ -94,6 +95,7 @@ class UnitSpocController extends Controller
                     'events.start_date',
                     'events.end_date',
                     'events.nomination_deadline',
+                    'users.id',
                     'users.name',
                     'users.last_name'
                 )
@@ -105,6 +107,17 @@ class UnitSpocController extends Controller
                     $startDate = Carbon::parse($event->start_date);
                     $diffInDays = Carbon::now()->diffInDays($startDate, false);
                     $event->is_closing_soon = $diffInDays >= 0 && $diffInDays <= 15;
+                    
+                    // Fetch nominee list for this event and nominator
+                    $event->nominees = DB::table('nominees_master')
+                        ->where('event_id', $event->event_id)
+                        ->where('nominator_id', $event->nominator_id)
+                        ->where('approval_status', 'pending')
+                        ->get()
+                        ->map(function ($nominee) {
+                            $nominee->full_name = trim($nominee->first_name . ' ' . $nominee->last_name);
+                            return $nominee;
+                        });
                     
                     return $event;
                 });
@@ -167,6 +180,7 @@ class UnitSpocController extends Controller
                     'events.start_date',
                     'events.end_date',
                     'events.nomination_deadline',
+                    'users.id as nominator_id',
                     'users.name as nominator_name',
                     'users.last_name as nominator_last_name',
                     DB::raw('count(nominees_master.id) as pending_count')
@@ -180,6 +194,7 @@ class UnitSpocController extends Controller
                     'events.start_date',
                     'events.end_date',
                     'events.nomination_deadline',
+                    'users.id',
                     'users.name',
                     'users.last_name'
                 )
@@ -191,6 +206,17 @@ class UnitSpocController extends Controller
                     $startDate = Carbon::parse($event->start_date);
                     $diffInDays = Carbon::now()->diffInDays($startDate, false);
                     $event->is_closing_soon = $diffInDays >= 0 && $diffInDays <= 15;
+                    
+                    // Fetch nominee list for this event and nominator
+                    $event->nominees = DB::table('nominees_master')
+                        ->where('event_id', $event->event_id)
+                        ->where('nominator_id', $event->nominator_id)
+                        ->where('approval_status', 'pending')
+                        ->get()
+                        ->map(function ($nominee) {
+                            $nominee->full_name = trim($nominee->first_name . ' ' . $nominee->last_name);
+                            return $nominee;
+                        });
                     
                     return $event;
                 });
