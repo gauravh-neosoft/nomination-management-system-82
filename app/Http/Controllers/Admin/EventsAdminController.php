@@ -38,14 +38,15 @@ class EventsAdminController extends Controller
     public function create()
     {
         $gdprOptions = GdprCompliance::where('is_active', true)->orderBy('name', 'asc')->get();
-        return view('admin.event-management', compact('gdprOptions'));
+
+        $unitSpocRoleId = \DB::table('roles')->where('name', 'unit_spoc')->value('id');
+        $unitSpocs = \App\Models\User::where('role_id', $unitSpocRoleId)->where('status', 1)->orderBy('name', 'asc')->get();
+
+        return view('admin.event-management', compact('gdprOptions', 'unitSpocs'));
     }
 
     public function store(Request $request)
     {
-        // Programmatically run migrations in case new columns are not migrated yet
-        Artisan::call('migrate', ['--force' => true]);
-
         $rules = [
             'event_code' => 'required|string|max:100|unique:events,event_code',
             'name' => 'required|string|max:255',
@@ -57,6 +58,8 @@ class EventsAdminController extends Controller
             'nomination_deadline' => 'required|date',
             'nomination_limit' => 'required|integer|min:1',
             'gdpr_compliance' => 'required|string|max:255',
+            'unit_spocs' => 'nullable|array',
+            'unit_spocs.*' => 'exists:users,id',
         ];
 
         if ($request->input('type') === 'Hospitality') {
@@ -89,11 +92,23 @@ class EventsAdminController extends Controller
 
         $event->status = 'ongoing';
         $event->created_by = Auth::id();
-        $event->updated_by = Auth::id();
+        $event->last_updated = Auth::id();
 
         $event->save();
 
-        return redirect()->route('admin-new-event-form')->with('success', 'Event stored successfully.');
+        if ($request->has('unit_spocs')) {
+            foreach ($request->input('unit_spocs') as $userId) {
+                \DB::table('event_assignments')->insert([
+                    'event_id' => $event->id,
+                    'user_id' => $userId,
+                    'assigned_by' => Auth::id(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        return redirect()->route('admin-events')->with('success', 'Event stored successfully.');
     }
 
     public function update(Request $request, $id)
@@ -114,6 +129,8 @@ class EventsAdminController extends Controller
             'nomination_deadline' => 'required|date',
             'nomination_limit' => 'required|integer|min:1',
             'gdpr_compliance' => 'required|string|max:255',
+            'unit_spocs' => 'nullable|array',
+            'unit_spocs.*' => 'exists:users,id',
         ];
 
         if ($request->input('type') === 'Hospitality') {
@@ -148,9 +165,30 @@ class EventsAdminController extends Controller
             $event->govt_company = null;
         }
 
-        $event->updated_by = Auth::id();
+        $event->last_updated = Auth::id();
 
         $event->save();
+
+        // Sync assigned unit spocs (keep nominators, delete existing unit spocs)
+        $unitSpocRoleId = \DB::table('roles')->where('name', 'unit_spoc')->value('id');
+        $unitSpocIdsForEvent = \App\Models\User::where('role_id', $unitSpocRoleId)->pluck('id')->toArray();
+
+        \DB::table('event_assignments')
+            ->where('event_id', $event->id)
+            ->whereIn('user_id', $unitSpocIdsForEvent)
+            ->delete();
+
+        if ($request->has('unit_spocs')) {
+            foreach ($request->input('unit_spocs') as $userId) {
+                \DB::table('event_assignments')->insert([
+                    'event_id' => $event->id,
+                    'user_id' => $userId,
+                    'assigned_by' => Auth::id(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
 
         return redirect()->route('admin-events')->with('success', 'Event updated successfully.');
     }
