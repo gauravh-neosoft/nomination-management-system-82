@@ -294,6 +294,30 @@ class NominatorController extends Controller
             }
         });
 
+        // 5. Send notification to admins
+        try {
+            $nominator = Auth::user();
+            $adminEmails = \App\Helpers\MailHelper::getAdminEmails();
+            if (!empty($adminEmails)) {
+                send_templated_email($adminEmails, 'nomination_added', [
+                    'subject' => 'New Nomination: ' . $validated['first_name'] . ' ' . $validated['last_name'] . ' - ' . $event->name,
+                    'event_name' => $event->name,
+                    'event_code' => $event->event_code,
+                    'nominator_name' => trim(($nominator->name ?? '') . ' ' . ($nominator->last_name ?? '')),
+                    'nominator_email' => $nominator->email ?? '',
+                    'first_name' => $validated['first_name'],
+                    'last_name' => $validated['last_name'],
+                    'email' => $validated['email'],
+                    'company' => $validated['company'],
+                    'title' => $validated['title'],
+                    'unit' => $validated['unit'],
+                    'sub_unit' => $validated['sub_unit'],
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to dispatch single nomination email: ' . $e->getMessage());
+        }
+
         return redirect()->route('nominator-active-events')->with('success', 'Nomination submitted successfully.');
     }
 
@@ -425,6 +449,7 @@ class NominatorController extends Controller
         $failedCount = 0;
         $failedList = [];
         $processedEmails = [];
+        $successfulNominees = [];
 
         // Process from row index 1 (skipping header)
         for ($i = 1; $i < count($rows); $i++) {
@@ -575,6 +600,14 @@ class NominatorController extends Controller
                     }
                 });
 
+                $successfulNominees[] = [
+                    'first_name' => $rowData['first_name'],
+                    'last_name' => $rowData['last_name'],
+                    'email' => $email,
+                    'company' => $rowData['company'],
+                    'title' => $rowData['title'],
+                    'unit' => $rowData['unit'] ?: 'FS',
+                ];
                 $successCount++;
             } catch (\Exception $ex) {
                 $failedCount++;
@@ -582,6 +615,26 @@ class NominatorController extends Controller
                     'email' => $email ?: 'Line ' . ($i + 1),
                     'reason' => $ex->getMessage()
                 ];
+            }
+        }
+
+        if ($successCount > 0) {
+            try {
+                $nominator = Auth::user();
+                $adminEmails = \App\Helpers\MailHelper::getAdminEmails();
+                if (!empty($adminEmails)) {
+                    send_templated_email($adminEmails, 'bulk_nomination_added', [
+                        'subject' => 'Bulk Nominations Uploaded (' . $successCount . ') - ' . $event->name,
+                        'event_name' => $event->name,
+                        'event_code' => $event->event_code,
+                        'nominator_name' => trim(($nominator->name ?? '') . ' ' . ($nominator->last_name ?? '')),
+                        'nominator_email' => $nominator->email ?? '',
+                        'nominees' => $successfulNominees,
+                        'count' => $successCount,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to dispatch bulk nomination email: ' . $e->getMessage());
             }
         }
 
