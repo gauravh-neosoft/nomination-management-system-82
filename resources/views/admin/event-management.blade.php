@@ -126,6 +126,28 @@
           @enderror
         </div>
 
+        <!-- Assigned Unit SPOCs/Ops -->
+        <div class="col-md-12">
+          <label class="form-label fw-bold small">Assign Unit Ops</label>
+          <div class="border rounded p-3 bg-white scrollable-content-box animate-fade-in" style="max-height: 150px; overflow-y: auto;">
+            <div class="row g-2">
+              @forelse($unitSpocs as $spoc)
+                <div class="col-sm-6 col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input border-primary" type="checkbox" name="unit_spocs[]" value="{{ $spoc->id }}" id="spoc-{{ $spoc->id }}" {{ is_array(old('unit_spocs')) && in_array($spoc->id, old('unit_spocs')) ? 'checked' : '' }}>
+                    <label class="form-check-label small" for="spoc-{{ $spoc->id }}">
+                      {{ $spoc->name }} {{ $spoc->last_name }} ({{ $spoc->email }})
+                    </label>
+                  </div>
+                </div>
+              @empty
+                <div class="col-12 text-muted small">No active Unit Ops found.</div>
+              @endforelse
+            </div>
+          </div>
+          <span class="text-secondary small d-block mt-1">Select the Unit SPOCs (Unit Ops) to assign to this event.</span>
+        </div>
+
         <!-- Conditional Hospitality Fields Container -->
         <div id="hospitality-fields-container" class="col-12 border rounded p-3 bg-white mt-3 shadow-sm animate-fade-in">
           <p class="fw-bold text-orange mb-3"><i class="bi bi-gift-fill me-1"></i> Hospitality Details</p>

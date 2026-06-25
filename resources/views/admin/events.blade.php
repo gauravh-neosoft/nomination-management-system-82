@@ -27,6 +27,7 @@
           <th>Event Status</th>
           <th>Nomination Requirement</th>
           <th>Nominator Name</th>
+          <th>Assigned Unit Ops</th>
           <th>Nominations</th>
           <th>Actions</th>
         </tr>
@@ -69,6 +70,9 @@
             <span class="text-secondary small">{{ $event->assigned_nominator_names }}</span>
           </td>
           <td>
+            <span class="text-secondary small">{{ $event->assigned_unit_spoc_names }}</span>
+          </td>
+          <td>
             <div class="d-flex justify-content-center gap-3 align-items-center">
               <div class="d-flex align-items-center">
                 <i class="bi bi-people text-primary me-2"></i><span>{{ $event->nominees_count }}</span>
@@ -99,7 +103,8 @@
                 declaration: '{{ addslashes($event->declaration) }}',
                 invite_for: '{{ addslashes($event->invite_for) }}',
                 invite_spouser: '{{ addslashes($event->invite_spouser) }}',
-                govt_company: '{{ addslashes($event->govt_company) }}'
+                govt_company: '{{ addslashes($event->govt_company) }}',
+                assigned_unit_spocs: {{ json_encode($event->assigned_unit_spoc_ids) }}
             })">Edit</button>
           </td>
         </tr>
@@ -180,6 +185,28 @@
                   <option value="{{ $option->name }}">{{ $option->name }}</option>
                 @endforeach
               </select>
+            </div>
+
+            <!-- Assigned Unit SPOCs/Ops -->
+            <div class="col-md-12">
+              <label class="form-label fw-bold small">Assign Unit Ops</label>
+              <div class="border rounded p-3 bg-white scrollable-content-box" style="max-height: 150px; overflow-y: auto;">
+                <div class="row g-2">
+                  @forelse($unitSpocs as $spoc)
+                    <div class="col-sm-6 col-md-4">
+                      <div class="form-check">
+                        <input class="form-check-input border-primary edit-form-spoc-checkbox" type="checkbox" name="unit_spocs[]" value="{{ $spoc->id }}" id="edit-spoc-{{ $spoc->id }}">
+                        <label class="form-check-label small" for="edit-spoc-{{ $spoc->id }}">
+                          {{ $spoc->name }} {{ $spoc->last_name }} ({{ $spoc->email }})
+                        </label>
+                      </div>
+                    </div>
+                  @empty
+                    <div class="col-12 text-muted small">No active Unit Ops found.</div>
+                  @endforelse
+                </div>
+              </div>
+              <span class="text-secondary small d-block mt-1">Select the Unit SPOCs (Unit Ops) to assign to this event.</span>
             </div>
 
             <!-- Conditional Hospitality Fields Container -->
@@ -342,6 +369,18 @@ function openEditEventModal(eventData) {
     document.getElementById('edit-form-event-invite-for').value = eventData.invite_for || '';
     document.getElementById('edit-form-event-invite-spouser').value = eventData.invite_spouser || '';
     document.getElementById('edit-form-event-govt-company').value = eventData.govt_company || '';
+    
+    // Reset unit spocs checkboxes
+    document.querySelectorAll('.edit-form-spoc-checkbox').forEach(cb => {
+        cb.checked = false;
+    });
+    // Check assigned unit spocs
+    if (eventData.assigned_unit_spocs) {
+        eventData.assigned_unit_spocs.forEach(id => {
+            const cb = document.getElementById(`edit-spoc-${id}`);
+            if (cb) cb.checked = true;
+        });
+    }
     
     toggleEditHospitalityFields();
     editEventModalInstance.show();

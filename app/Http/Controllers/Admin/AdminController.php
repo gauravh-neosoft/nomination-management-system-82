@@ -140,22 +140,48 @@ class AdminController extends Controller
                 ? $domainLimits->map(fn($dl) => "{$dl->domain_name} ({$dl->max_limit})")->implode(', ')
                 : 'None';
 
-            // Fetch assigned nominators
+            // Fetch assigned nominators (users with role nominator)
             $assignedNominators = \DB::table('event_assignments')
                 ->join('users', 'event_assignments.user_id', '=', 'users.id')
+                ->join('roles', 'users.role_id', '=', 'roles.id')
                 ->where('event_assignments.event_id', $event->id)
+                ->where('roles.name', 'nominator')
                 ->pluck('users.name');
             
             $event->assigned_nominator_names = $assignedNominators->isNotEmpty()
                 ? $assignedNominators->implode(', ')
                 : 'None';
 
+            // Fetch assigned unit spocs (users with role unit_spoc)
+            $assignedUnitSpocNames = \DB::table('event_assignments')
+                ->join('users', 'event_assignments.user_id', '=', 'users.id')
+                ->join('roles', 'users.role_id', '=', 'roles.id')
+                ->where('event_assignments.event_id', $event->id)
+                ->where('roles.name', 'unit_spoc')
+                ->pluck('users.name');
+            
+            $event->assigned_unit_spoc_names = $assignedUnitSpocNames->isNotEmpty()
+                ? $assignedUnitSpocNames->implode(', ')
+                : 'None';
+
+            // Fetch raw assigned unit spoc IDs for Edit Modal pre-selection
+            $event->assigned_unit_spoc_ids = \DB::table('event_assignments')
+                ->join('users', 'event_assignments.user_id', '=', 'users.id')
+                ->join('roles', 'users.role_id', '=', 'roles.id')
+                ->where('event_assignments.event_id', $event->id)
+                ->where('roles.name', 'unit_spoc')
+                ->pluck('users.id')
+                ->toArray();
+
             return $event;
         });
 
         $gdprOptions = GdprCompliance::where('is_active', true)->orderBy('name', 'asc')->get();
 
-        return view('admin.events', compact('events', 'gdprOptions'));
+        $unitSpocRoleId = \DB::table('roles')->where('name', 'unit_spoc')->value('id');
+        $unitSpocs = \App\Models\User::where('role_id', $unitSpocRoleId)->where('status', 1)->orderBy('name', 'asc')->get();
+
+        return view('admin.events', compact('events', 'gdprOptions', 'unitSpocs'));
     }
 
     public function destroy($id)
