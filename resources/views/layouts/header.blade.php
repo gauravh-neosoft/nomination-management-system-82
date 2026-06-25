@@ -41,7 +41,6 @@
       <i class="bi bi-person"></i>
 
       <div class="d-flex flex-column text-start">
-        <span class="text-lg fw-bold">{{ auth()->user()->name ?? 'Yash Purkar' }}</span>
         @php
         $role = 'Nominator';
         $email = auth()->user() ? auth()->user()->email : '';
@@ -53,7 +52,7 @@
         $role = 'Admin';
         }
         @endphp
-        <small class="text-white-50">{{ $role }}</small>
+        <span class="text-lg fw-bold">{{ auth()->user()->name ?? 'Yash Purkar' }} <small class="text-white-50">({{ $role }})</small></span>
       </div>
     </a>
   </div>

@@ -110,21 +110,25 @@
  * Affects: Custom colored typography blocks
  * ------------------------------------------------------------- */
 .text-blue {
-  color: #3b82f6 !important;
+  color: var(--color-blue) !important;
 }
 .text-orange {
-  color: #f16c51 !important;
+  color: var(--color-orange) !important;
 }
-
+.text-green {
+  color: var(--color-green) !important;
+}
+.text-yellow {
+  color: var(--color-yellow) !important;
+}
 .text-purple {
-  color: #963596;
+  color: var(--color-purple) !important;
 }
-
 .bg-green {
-  background-color: var(--bg-green);
+  background-color: var(--color-green) !important;
 }
 .text-light-grey {
-  color: var(--text-light-grey);
+  color: var(--text-light-grey) !important;
 }
 
 /* Letter Spacing */
@@ -136,3 +140,47 @@
 .alert-blue-bg {
   background-color: #bee3ff33;
 }
+
+.border-light-grey {
+  border: 1px solid var(--border-light-grey) !important;
+}
+
+.mw-600 {
+  max-width: 600px;
+}
+
+.closing-soon {
+  background-color: var(--bg-light-warning);
+  color: var(--color-yellow);
+}
+
+.rejected {
+  background-color: var(--bg-light-warning);
+  color: var(--color-orange);
+}
+
+.status-closed {
+  background-color: var(--color-light-grey);
+  color: var(--text-secondary);
+}
+
+.card-top-border {
+  border-top: 10px solid;
+}
+
+.border-green {
+  border-color: var(--color-green) !important;
+  border-top-color: var(--color-green) !important;
+}
+
+.border-purple {
+  border-color: var(--color-purple) !important;
+  border-top-color: var(--color-purple) !important;
+}
+
+.border-orange {
+  border-color: var(--color-orange) !important;
+  border-top-color: var(--color-orange) !important;
+}
+
+

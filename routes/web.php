@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NominatorController;
+use App\Http\Controllers\UnitSpocController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -52,6 +53,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('nominator/events/{id}/nominate', [NominatorController::class, 'submitNomination'])->name('nominator-submit-nomination');
     Route::get('nominator/events/{id}/download-template', [NominatorController::class, 'downloadTemplate'])->name('nominator-download-template');
     Route::post('nominator/events/{id}/bulk-upload', [NominatorController::class, 'bulkUpload'])->name('nominator-bulk-upload');
+
+    // Unit SPOC Routes
+    Route::get('unit-spoc/dashboard', [UnitSpocController::class, 'dashboard'])->name('unit-spoc-dashboard');
+    Route::get('unit-spoc/events/active', [UnitSpocController::class, 'activeEvents'])->name('unit-spoc-active-events');
+    Route::get('unit-spoc/events/completed', [UnitSpocController::class, 'completedEvents'])->name('unit-spoc-completed-events');
+    Route::get('unit-spoc/nominations', [UnitSpocController::class, 'nominations'])->name('unit-spoc-nominations');
+    Route::post('unit-spoc/nominations/{id}/approve', [UnitSpocController::class, 'approveNomination'])->name('unit-spoc-approve-nomination');
+    Route::post('unit-spoc/nominations/{id}/reject', [UnitSpocController::class, 'rejectNomination'])->name('unit-spoc-reject-nomination');
+    Route::post('unit-spoc/nominations/{id}/remark', [UnitSpocController::class, 'addRemark'])->name('unit-spoc-add-remark');
+    Route::post('unit-spoc/nominations/{id}/update', [UnitSpocController::class, 'updateNomination'])->name('unit-spoc-update-nomination');
 
     Route::get('admin/create-new-event', [EventsAdminController::class, 'create'])->name('admin-new-event-form');
     Route::post('admin/create-new-event', [EventsAdminController::class, 'store'])->name('admin-save-new-event');

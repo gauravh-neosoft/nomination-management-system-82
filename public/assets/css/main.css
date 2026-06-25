@@ -29,7 +29,28 @@
   --border-light-grey: #f1f5f9;
   --bg-green: #00b28f;
   --bg-opacity: #0000001a;
+  --border-grey: #dadada99;
+  --bg-light-warning: #f4e0c866;
+  --bg-active-tab: #e5f4ff;
+
+  /* Additional Custom Color Variables */
+  --color-orange: #f16c51;
+  --color-light-blue: #eff6ff;
+  --color-light-red: #fff1f2;
+  --color-light-purple: #e6dbe666;
+  --color-light-yellow: #fffbeb;
+  --color-light-green: #00b28f0f;
+  --color-light-grey: #f3f2f2;
+  --color-light-orange: #f16c510f;
+  --color-skyblue: #f8fafc;
+  --color-blue: #3b82f6;
+  --color-green: #00b28f;
+  --color-purple: #963596;
+  --color-secondary: #bee3ff66;
+  --color-grey: #e2e8f0;
+  --color-yellow: #df9926;
 }
+
 
 /* -------------------------------------------------------------
  * 2. Base Reset & Typography
@@ -349,3 +370,29 @@ input::placeholder {
 .custom-accordion .accordion-button:not(.collapsed) .bi-chevron-down {
   transform: rotate(180deg);
 }
+
+/* Dashboard & Tabs */
+.dashboard-card-icon {
+  font-size: 1.5rem;
+}
+
+.underline-tabs .nav-link {
+  border: none;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.underline-tabs .nav-link:hover {
+  border-bottom-color: var(--brand-primary);
+}
+
+.underline-tabs .nav-link.active {
+  border-bottom-color: var(--brand-primary);
+  background-color: var(--bg-active-tab);
+}
+
+/* Timeline Declined State */
+.timeline-declined {
+  background-color: #fef2f2;
+  color: #ef4444;
+}
+
