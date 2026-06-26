@@ -53,7 +53,9 @@ class AdminController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        return view('admin.users', compact('users'));
+        $roles = \App\Models\Role::orderBy('display_name', 'asc')->get();
+
+        return view('admin.users', compact('users', 'roles'));
     }
 
     public function createUserForm()
@@ -100,6 +102,31 @@ class AdminController extends Controller
             'message' => 'User status updated successfully.',
             'status' => $user->status
         ]);
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'contact_no' => 'nullable|string|max:100',
+            'role_id' => 'required|exists:roles,id',
+            'status' => 'required|in:0,1',
+        ]);
+
+        $user->update([
+            'name' => $validated['name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'contact_no' => $validated['contact_no'] ?: null,
+            'role_id' => $validated['role_id'],
+            'status' => (int) $validated['status'],
+        ]);
+
+        return redirect()->route('admin-users')->with('success', 'User updated successfully.');
     }
 
     public function events()

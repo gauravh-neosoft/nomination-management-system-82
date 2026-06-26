@@ -85,12 +85,54 @@
               <div class="mb-3">
                 <label for="user_email" class="form-label text-dark fw-bold">Email address / ID</label>
                 <select name="user_email" id="user_email" class="form-select form-select-sm rounded-3">
-                  <option value="gaurav@nominator.com" selected>gaurav@nominator.com (Nominator)</option>
-                  <option value="sunny@nominator.com" selected>sunny@nominator.com (Nominator)</option>
-                  <option value="gaurav@unitspoc.com">gaurav@unitspoc.com (Unit SPOC)</option>
-                  <option value="gaurav@eventops.com">gaurav@eventops.com (Event OPS)</option>
-                  <option value="gaurav@admin.com">gaurav@admin.com (Admin)</option>
-                  <option value="suraj@superadmin.com">suraj@superadmin.com (Admin)</option>
+                  <!-- Seeded Evaluation Dataset -->
+                  <optgroup label="Super Admin (1 User)">
+                    <option value="hedagaurav1378-super_admin-super1@gmail.com">hedagaurav1378-super_admin-super1@gmail.com</option>
+                  </optgroup>
+                  <optgroup label="Admins (3 Users)">
+                    <option value="hedagaurav1378-admin-admin1@gmail.com">hedagaurav1378-admin-admin1@gmail.com</option>
+                    <option value="hedagaurav1378-admin-admin2@gmail.com">hedagaurav1378-admin-admin2@gmail.com</option>
+                    <option value="hedagaurav1378-admin-admin3@gmail.com">hedagaurav1378-admin-admin3@gmail.com</option>
+                  </optgroup>
+                  <optgroup label="Nominators (10 Users)">
+                    <option value="hedagaurav1378-nominator-nom1@gmail.com">hedagaurav1378-nominator-nom1@gmail.com</option>
+                    <option value="hedagaurav1378-nominator-nom2@gmail.com">hedagaurav1378-nominator-nom2@gmail.com</option>
+                    <option value="hedagaurav1378-nominator-nom3@gmail.com">hedagaurav1378-nominator-nom3@gmail.com</option>
+                    <option value="hedagaurav1378-nominator-nom4@gmail.com">hedagaurav1378-nominator-nom4@gmail.com</option>
+                    <option value="hedagaurav1378-nominator-nom5@gmail.com">hedagaurav1378-nominator-nom5@gmail.com</option>
+                    <option value="hedagaurav1378-nominator-nom6@gmail.com">hedagaurav1378-nominator-nom6@gmail.com</option>
+                    <option value="hedagaurav1378-nominator-nom7@gmail.com">hedagaurav1378-nominator-nom7@gmail.com</option>
+                    <option value="hedagaurav1378-nominator-nom8@gmail.com">hedagaurav1378-nominator-nom8@gmail.com</option>
+                    <option value="hedagaurav1378-nominator-nom9@gmail.com">hedagaurav1378-nominator-nom9@gmail.com</option>
+                    <option value="hedagaurav1378-nominator-nom10@gmail.com">hedagaurav1378-nominator-nom10@gmail.com</option>
+                  </optgroup>
+                  <optgroup label="Unit SPOCs / Unit Ops (5 Users)">
+                    <option value="hedagaurav1378-unit_spoc-spoc1@gmail.com">hedagaurav1378-unit_spoc-spoc1@gmail.com</option>
+                    <option value="hedagaurav1378-unit_spoc-spoc2@gmail.com">hedagaurav1378-unit_spoc-spoc2@gmail.com</option>
+                    <option value="hedagaurav1378-unit_spoc-spoc3@gmail.com">hedagaurav1378-unit_spoc-spoc3@gmail.com</option>
+                    <option value="hedagaurav1378-unit_spoc-spoc4@gmail.com">hedagaurav1378-unit_spoc-spoc4@gmail.com</option>
+                    <option value="hedagaurav1378-unit_spoc-spoc5@gmail.com">hedagaurav1378-unit_spoc-spoc5@gmail.com</option>
+                  </optgroup>
+                  <optgroup label="Event Ops (10 Users)">
+                    <option value="hedagaurav1378-event_ops-ops1@gmail.com">hedagaurav1378-event_ops-ops1@gmail.com</option>
+                    <option value="hedagaurav1378-event_ops-ops2@gmail.com">hedagaurav1378-event_ops-ops2@gmail.com</option>
+                    <option value="hedagaurav1378-event_ops-ops3@gmail.com">hedagaurav1378-event_ops-ops3@gmail.com</option>
+                    <option value="hedagaurav1378-event_ops-ops4@gmail.com">hedagaurav1378-event_ops-ops4@gmail.com</option>
+                    <option value="hedagaurav1378-event_ops-ops5@gmail.com">hedagaurav1378-event_ops-ops5@gmail.com</option>
+                    <option value="hedagaurav1378-event_ops-ops6@gmail.com">hedagaurav1378-event_ops-ops6@gmail.com</option>
+                    <option value="hedagaurav1378-event_ops-ops7@gmail.com">hedagaurav1378-event_ops-ops7@gmail.com</option>
+                    <option value="hedagaurav1378-event_ops-ops8@gmail.com">hedagaurav1378-event_ops-ops8@gmail.com</option>
+                    <option value="hedagaurav1378-event_ops-ops9@gmail.com">hedagaurav1378-event_ops-ops9@gmail.com</option>
+                    <option value="hedagaurav1378-event_ops-ops10@gmail.com">hedagaurav1378-event_ops-ops10@gmail.com</option>
+                  </optgroup>
+                  <optgroup label="Default Test Accounts">
+                    <option value="gaurav@nominator.com">gaurav@nominator.com (Nominator)</option>
+                    <option value="sunny@nominator.com">sunny@nominator.com (Nominator)</option>
+                    <option value="gaurav@unitspoc.com">gaurav@unitspoc.com (Unit SPOC)</option>
+                    <option value="gaurav@eventops.com">gaurav@eventops.com (Event OPS)</option>
+                    <option value="gaurav@admin.com">gaurav@admin.com (Admin)</option>
+                    <option value="suraj@superadmin.com">suraj@superadmin.com (Admin)</option>
+                  </optgroup>
                 </select>
               </div>
 

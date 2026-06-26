@@ -17,9 +17,9 @@ class DashboardController extends Controller
 
         $email = $user->email;
 
-        if (str_contains($email, 'unitspoc')) {
+        if (str_contains($email, 'unit_spoc') || str_contains($email, 'unitspoc')) {
             return redirect()->route('unit-spoc-dashboard');
-        } elseif (str_contains($email, 'eventops')) {
+        } elseif (str_contains($email, 'event_ops') || str_contains($email, 'eventops')) {
             return redirect()->route('event-ops-dashboard');
         } elseif (str_contains($email, 'admin')) {
             return redirect()->route('admin-dashboard');

@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MasterDataSeeder::class,
             NomineeAndEventSeeder::class,
+            LargeScaleSeeder::class,
         ]);
     }
 }

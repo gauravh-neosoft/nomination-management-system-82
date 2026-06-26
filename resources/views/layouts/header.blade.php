@@ -44,9 +44,9 @@
         @php
         $role = 'Nominator';
         $email = auth()->user() ? auth()->user()->email : '';
-        if (str_contains($email, 'unitspoc')) {
+        if (str_contains($email, 'unit_spoc') || str_contains($email, 'unitspoc')) {
         $role = 'Unit SPOC';
-        } elseif (str_contains($email, 'eventops')) {
+        } elseif (str_contains($email, 'event_ops') || str_contains($email, 'eventops')) {
         $role = 'Event OPS';
         } elseif (str_contains($email, 'admin')) {
         $role = 'Admin';

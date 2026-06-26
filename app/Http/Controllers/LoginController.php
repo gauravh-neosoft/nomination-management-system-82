@@ -15,11 +15,13 @@ class LoginController extends Controller
 
         // Determine the role based on the email domain / prefix
         $roleName = 'nominator';
-        if (str_contains($email, 'admin')) {
+        if (str_contains($email, 'super_admin')) {
+            $roleName = 'super_admin';
+        } elseif (str_contains($email, 'admin')) {
             $roleName = 'admin';
-        } elseif (str_contains($email, 'eventops')) {
+        } elseif (str_contains($email, 'event_ops') || str_contains($email, 'eventops')) {
             $roleName = 'event_ops';
-        } elseif (str_contains($email, 'unitspoc')) {
+        } elseif (str_contains($email, 'unit_spoc') || str_contains($email, 'unitspoc')) {
             $roleName = 'unit_spoc';
         }
 

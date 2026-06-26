@@ -72,6 +72,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/users/create', [AdminController::class, 'createUserForm'])->name('admin-users-create');
     Route::post('admin/users/store', [AdminController::class, 'storeUser'])->name('admin-users-store');
     Route::post('admin/users/{id}/toggle', [AdminController::class, 'toggleUserStatus'])->name('admin-users-toggle');
+    Route::post('admin/users/{id}/update', [AdminController::class, 'updateUser'])->name('admin-users-update');
     Route::get('admin/events', [AdminController::class, 'events'])->name('admin-events');
     Route::get('admin/queue', [AdminController::class, 'queue'])->name('admin-queue');
     Route::get('admin/contacts', [AdminController::class, 'contacts'])->name('admin-contacts');
